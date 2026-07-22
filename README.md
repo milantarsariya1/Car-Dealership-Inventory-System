@@ -20,6 +20,14 @@ An enterprise-grade, full-stack **Car Dealership Inventory Management System** b
 
 ---
 
+## 📸 Application Screenshots
+
+<p align="center">
+  <img src="./docs/screenshots/app-preview.png" alt="Car Dealership Inventory System UI Showcase" width="100%" />
+</p>
+
+---
+
 ## 🏗️ System Architecture & Workflow
 
 ```mermaid
