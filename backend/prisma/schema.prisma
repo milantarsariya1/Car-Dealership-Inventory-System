@@ -1,15 +1,77 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/client"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Category {
+  SEDAN
+  SUV
+  TRUCK
+  COUPE
+  EV
+  HYBRID
+}
+
+enum TransactionType {
+  PURCHASE
+  RESTOCK
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  name         String
+  role         Role          @default(USER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+model Vehicle {
+  id           String        @id @default(uuid())
+  vin          String        @unique
+  make         String
+  model        String
+  category     Category
+  price        Float
+  quantity     Int           @default(0)
+  imageUrl     String?
+  description  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+
+  @@map("vehicles")
+}
+
+model Transaction {
+  id         String          @id @default(uuid())
+  userId     String
+  vehicleId  String
+  type       TransactionType
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+  createdAt  DateTime        @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
 }
