@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { VehicleController } from '../controllers/vehicle.controller';
+import { InventoryController } from '../controllers/inventory.controller';
 import { authenticateToken, requireRole } from '../middleware/auth.middleware';
 import { Role } from '../generated/client';
 
@@ -14,5 +15,9 @@ router.get('/:id', VehicleController.getVehicleById);
 router.post('/', authenticateToken, requireRole([Role.ADMIN]), VehicleController.createVehicle);
 router.put('/:id', authenticateToken, requireRole([Role.ADMIN]), VehicleController.updateVehicle);
 router.delete('/:id', authenticateToken, requireRole([Role.ADMIN]), VehicleController.deleteVehicle);
+
+// Inventory Management Endpoints (Purchase & Restock)
+router.post('/:id/purchase', authenticateToken, InventoryController.purchaseVehicle);
+router.post('/:id/restock', authenticateToken, requireRole([Role.ADMIN]), InventoryController.restockVehicle);
 
 export default router;
