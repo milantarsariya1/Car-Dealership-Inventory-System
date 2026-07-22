@@ -8,7 +8,11 @@
     "build": "tsc",
     "start": "node dist/src/server.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
-    "test:coverage": "jest --runInBand --coverage"
+    "test:coverage": "jest --runInBand --coverage",
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
