@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "postinstall": "prisma generate",
-    "build": "prisma generate && tsc",
+    "build": "prisma generate && tsc -p tsconfig.json",
     "start": "node dist/src/server.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
     "test:coverage": "jest --runInBand --coverage",
     "seed": "ts-node prisma/seed.ts",
-    "vercel-build": "prisma generate && tsc"
+    "vercel-build": "prisma generate && tsc -p tsconfig.json"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

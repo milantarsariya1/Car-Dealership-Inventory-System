@@ -65,6 +65,14 @@ const config = {
                 "fromEnvVar": null,
                 "value": "windows",
                 "native": true
+            },
+            {
+                "fromEnvVar": null,
+                "value": "rhel-openssl-3.0.x"
+            },
+            {
+                "fromEnvVar": null,
+                "value": "debian-openssl-3.0.x"
             }
         ],
         "previewFeatures": [],
@@ -87,8 +95,8 @@ const config = {
             }
         }
     },
-    "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n\nenum Category {\n  SEDAN\n  SUV\n  TRUCK\n  COUPE\n  EV\n  HYBRID\n}\n\nenum TransactionType {\n  PURCHASE\n  RESTOCK\n}\n\nmodel User {\n  id           String        @id @default(uuid())\n  email        String        @unique\n  password     String\n  name         String\n  role         Role          @default(USER)\n  createdAt    DateTime      @default(now())\n  updatedAt    DateTime      @updatedAt\n  transactions Transaction[]\n\n  @@map(\"users\")\n}\n\nmodel Vehicle {\n  id           String        @id @default(uuid())\n  vin          String        @unique\n  make         String\n  model        String\n  category     Category\n  price        Float\n  quantity     Int           @default(0)\n  imageUrl     String?\n  description  String?\n  createdAt    DateTime      @default(now())\n  updatedAt    DateTime      @updatedAt\n  transactions Transaction[]\n\n  @@map(\"vehicles\")\n}\n\nmodel Transaction {\n  id         String          @id @default(uuid())\n  userId     String\n  vehicleId  String\n  type       TransactionType\n  quantity   Int\n  unitPrice  Float\n  totalPrice Float\n  createdAt  DateTime        @default(now())\n\n  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)\n\n  @@map(\"transactions\")\n}\n",
-    "inlineSchemaHash": "6a4b81aa639d5f9a97fbd07ef186bde1b61f26c7ddf966c8f3db6ce17d75b041",
+    "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider      = \"prisma-client\"\n  output        = \"../src/generated/client\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n\nenum Category {\n  SEDAN\n  SUV\n  TRUCK\n  COUPE\n  EV\n  HYBRID\n}\n\nenum TransactionType {\n  PURCHASE\n  RESTOCK\n}\n\nmodel User {\n  id           String        @id @default(uuid())\n  email        String        @unique\n  password     String\n  name         String\n  role         Role          @default(USER)\n  createdAt    DateTime      @default(now())\n  updatedAt    DateTime      @updatedAt\n  transactions Transaction[]\n\n  @@map(\"users\")\n}\n\nmodel Vehicle {\n  id           String        @id @default(uuid())\n  vin          String        @unique\n  make         String\n  model        String\n  category     Category\n  price        Float\n  quantity     Int           @default(0)\n  imageUrl     String?\n  description  String?\n  createdAt    DateTime      @default(now())\n  updatedAt    DateTime      @updatedAt\n  transactions Transaction[]\n\n  @@map(\"vehicles\")\n}\n\nmodel Transaction {\n  id         String          @id @default(uuid())\n  userId     String\n  vehicleId  String\n  type       TransactionType\n  quantity   Int\n  unitPrice  Float\n  totalPrice Float\n  createdAt  DateTime        @default(now())\n\n  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)\n\n  @@map(\"transactions\")\n}\n",
+    "inlineSchemaHash": "ce7b34f42ddceb0abdad778d612adbdba6a94cade09dcdb958b8138be8e72492",
     "copyEngine": true,
     "runtimeDataModel": {
         "models": {},
