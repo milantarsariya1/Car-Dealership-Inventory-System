@@ -1,22 +1,40 @@
 # 🚗 Car Dealership Inventory System
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge&logo=vercel" alt="Status" />
-  <img src="https://img.shields.io/badge/Tests-20%2F20%20Passing-success?style=for-the-badge&logo=jest" alt="Tests" />
-  <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=for-the-badge&logo=typescript" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react" alt="React" />
-  <img src="https://img.shields.io/badge/Node.js-18%2B-green?style=for-the-badge&logo=node.js" alt="Node" />
-  <img src="https://img.shields.io/badge/Database-Neon%20PostgreSQL-336791?style=for-the-badge&logo=postgresql" alt="PostgreSQL" />
+  <a href="https://car-inventory-milan.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/🌐%20LIVE%20DEMO-car--inventory--milan.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+  <a href="https://github.com/milantarsariya1/Car-Dealership-Inventory-System" target="_blank">
+    <img src="https://img.shields.io/badge/🐙%20GITHUB-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square&logo=vercel" alt="Status" />
+  <img src="https://img.shields.io/badge/Tests-20%2F20%20Passing-success?style=flat-square&logo=jest" alt="Tests" />
+  <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/Database-Neon%20PostgreSQL-336791?style=flat-square&logo=postgresql" alt="PostgreSQL" />
 </p>
 
 An enterprise-grade, full-stack **Car Dealership Inventory Management System** built with **Node.js, Express, TypeScript, Prisma (Neon PostgreSQL)**, and **React + TailwindCSS**. Designed and implemented following strict **Test-Driven Development (TDD)** using the **Red-Green-Refactor** pattern and **SOLID software architecture principles**.
 
 ---
 
-## 🌟 Live Demo & Deployment
-
-- 🔗 **GitHub Repository**: [https://github.com/milantarsariya1/Car-Dealership-Inventory-System](https://github.com/milantarsariya1/Car-Dealership-Inventory-System)
-- 🚀 **Live Application (Vercel)**: [https://car-inventory-milan.vercel.app](https://car-inventory-milan.vercel.app)
+> [!IMPORTANT]
+> ### 🚀 **Experience the Live Web Application**
+> 
+> Click below to launch the production deployment hosted on Vercel's global edge network:
+> 
+> <p align="center">
+>   <a href="https://car-inventory-milan.vercel.app" target="_blank">
+>     <img src="https://img.shields.io/badge/⚡%20LAUNCH%20LIVE%20APP-https%3A%2F%2Fcar--inventory--milan.vercel.app-2563EB?style=for-the-badge&logo=vercel&logoColor=white" width="420" alt="Launch Live App" />
+>   </a>
+> </p>
+> 
+> - 🌐 **Production URL**: [https://car-inventory-milan.vercel.app](https://car-inventory-milan.vercel.app)
+> - ⚡ **Backend Cloud DB**: Serverless Neon PostgreSQL (US-East)
+> - 🔑 **Instant Demo Logins**: Pre-populated buttons available in the Sign In modal for both **Admin** (`admin@dealership.com`) and **Customer** (`customer@gmail.com`).
 
 ---
 
