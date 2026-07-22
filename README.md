@@ -16,7 +16,7 @@ An enterprise-grade, full-stack **Car Dealership Inventory Management System** b
 ## 🌟 Live Demo & Deployment
 
 - 🔗 **GitHub Repository**: [https://github.com/milantarsariya1/Car-Dealership-Inventory-System](https://github.com/milantarsariya1/Car-Dealership-Inventory-System)
-- 🚀 **Live Application (Vercel)**: `https://car-dealership-inventory-system.vercel.app`
+- 🚀 **Live Application (Vercel)**: [https://car-inventory-milan.vercel.app](https://car-inventory-milan.vercel.app)
 
 ---
 
