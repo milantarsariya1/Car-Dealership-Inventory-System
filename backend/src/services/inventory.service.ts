@@ -8,7 +8,7 @@ export class InventoryService {
       throw new AppError('Quantity must be greater than zero', 400);
     }
 
-    return await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx: any) => {
       const vehicle = await tx.vehicle.findUnique({
         where: { id: vehicleId },
       });
@@ -54,7 +54,7 @@ export class InventoryService {
       throw new AppError('Restock quantity must be greater than zero', 400);
     }
 
-    return await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx: any) => {
       const vehicle = await tx.vehicle.findUnique({
         where: { id: vehicleId },
       });
