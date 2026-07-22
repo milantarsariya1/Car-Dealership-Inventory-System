@@ -8,7 +8,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const prisma_1 = __importDefault(require("../config/prisma"));
 const error_middleware_1 = require("../middleware/error.middleware");
-const client_1 = require("../generated/client");
+const client_1 = require("@prisma/client");
 class AuthService {
     static async register(dto) {
         if (!dto.email || !dto.password || !dto.name) {

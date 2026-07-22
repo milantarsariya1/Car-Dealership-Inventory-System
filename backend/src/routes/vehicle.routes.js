@@ -4,7 +4,7 @@ const express_1 = require("express");
 const vehicle_controller_1 = require("../controllers/vehicle.controller");
 const inventory_controller_1 = require("../controllers/inventory.controller");
 const auth_middleware_1 = require("../middleware/auth.middleware");
-const client_1 = require("../generated/client");
+const client_1 = require("@prisma/client");
 const router = (0, express_1.Router)();
 // Public / View Endpoints
 router.get('/search', vehicle_controller_1.VehicleController.searchVehicles);

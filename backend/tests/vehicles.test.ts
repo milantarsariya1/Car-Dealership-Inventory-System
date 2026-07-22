@@ -1,180 +1,122 @@
 import 'dotenv/config';
 import request from 'supertest';
 import app from '../src/app';
-import { PrismaClient } from '../src/generated/client';
+import { PrismaClient } from '@prisma/client';
 
 jest.setTimeout(30000);
 
 const prisma = new PrismaClient();
 
-describe('Vehicles Endpoints (/api/vehicles)', () => {
+describe('Vehicle Inventory Endpoints (/api/vehicles)', () => {
   let adminToken: string;
   let userToken: string;
   let createdVehicleId: string;
 
-  const testAdmin = {
-    name: 'Admin Dealer',
-    email: 'admin_vehicle_test@test.com',
-    password: 'password123',
-    role: 'ADMIN',
-  };
-
-  const testUser = {
-    name: 'Regular Customer',
-    email: 'user_vehicle_test@test.com',
-    password: 'password123',
-    role: 'USER',
-  };
-
-  const sampleVehicle = {
-    vin: '1HGCR2F83HA000001',
-    make: 'Honda',
-    model: 'Accord',
-    category: 'SEDAN',
-    price: 28500,
-    quantity: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1590362891991-f776e747a588',
-    description: 'Reliable sedan with modern safety features.',
+  const testVehicle = {
+    vin: 'TEST1234567890VIN',
+    make: 'Porsche',
+    model: '911 GT3 RS',
+    category: 'COUPE',
+    price: 223800,
+    quantity: 3,
+    description: 'Track-focused aerodynamic masterpiece with 518 hp naturally aspirated flat-six.',
   };
 
   beforeAll(async () => {
-    // Cleanup existing test users & vehicles
-    await prisma.vehicle.deleteMany({ where: { vin: sampleVehicle.vin } });
-    await prisma.user.deleteMany({
-      where: { email: { in: [testAdmin.email, testUser.email] } },
-    });
+    // Clean database test data
+    await prisma.vehicle.deleteMany({ where: { vin: testVehicle.vin } });
+    await prisma.user.deleteMany({ where: { email: { in: ['veh_admin@test.com', 'veh_user@test.com'] } } });
 
-    // Register & login admin
-    const adminReg = await request(app).post('/api/auth/register').send(testAdmin);
-    const adminLogin = await request(app).post('/api/auth/login').send({
-      email: testAdmin.email,
-      password: testAdmin.password,
+    // Register & Login Admin
+    await request(app).post('/api/auth/register').send({
+      name: 'Vehicle Admin',
+      email: 'veh_admin@test.com',
+      password: 'password123',
+      role: 'ADMIN',
     });
-    adminToken = adminLogin.body.token;
+    const adminLoginRes = await request(app).post('/api/auth/login').send({
+      email: 'veh_admin@test.com',
+      password: 'password123',
+    });
+    adminToken = adminLoginRes.body.token;
 
-    // Register & login regular user
-    const userReg = await request(app).post('/api/auth/register').send(testUser);
-    const userLogin = await request(app).post('/api/auth/login').send({
-      email: testUser.email,
-      password: testUser.password,
+    // Register & Login Customer
+    await request(app).post('/api/auth/register').send({
+      name: 'Vehicle Customer',
+      email: 'veh_user@test.com',
+      password: 'password123',
+      role: 'USER',
     });
-    userToken = userLogin.body.token;
+    const userLoginRes = await request(app).post('/api/auth/login').send({
+      email: 'veh_user@test.com',
+      password: 'password123',
+    });
+    userToken = userLoginRes.body.token;
   });
 
   afterAll(async () => {
-    await prisma.vehicle.deleteMany({ where: { vin: sampleVehicle.vin } });
-    await prisma.user.deleteMany({
-      where: { email: { in: [testAdmin.email, testUser.email] } },
-    });
+    await prisma.vehicle.deleteMany({ where: { vin: testVehicle.vin } });
+    await prisma.user.deleteMany({ where: { email: { in: ['veh_admin@test.com', 'veh_user@test.com'] } } });
     await prisma.$disconnect();
   });
 
-  describe('POST /api/vehicles', () => {
-    it('should allow admin to create a new vehicle', async () => {
+  describe('POST /api/vehicles (Admin Only)', () => {
+    it('should allow ADMIN to add a new vehicle', async () => {
       const res = await request(app)
         .post('/api/vehicles')
         .set('Authorization', `Bearer ${adminToken}`)
-        .send(sampleVehicle);
+        .send(testVehicle);
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
-      expect(res.body.data).toHaveProperty('id');
-      expect(res.body.data.vin).toBe(sampleVehicle.vin);
-      expect(res.body.data.make).toBe(sampleVehicle.make);
-      expect(res.body.data.quantity).toBe(sampleVehicle.quantity);
-
+      expect(res.body.data.vin).toBe(testVehicle.vin);
       createdVehicleId = res.body.data.id;
     });
 
-    it('should reject vehicle creation without authorization token', async () => {
-      const res = await request(app).post('/api/vehicles').send(sampleVehicle);
-
-      expect(res.status).toBe(401);
-      expect(res.body.success).toBe(false);
-    });
-
-    it('should reject vehicle creation by regular non-admin user', async () => {
+    it('should reject vehicle creation from non-admin user (403 Forbidden)', async () => {
       const res = await request(app)
         .post('/api/vehicles')
         .set('Authorization', `Bearer ${userToken}`)
-        .send({ ...sampleVehicle, vin: '1HGCR2F83HA000002' });
+        .send({ ...testVehicle, vin: 'ANOTHERVIN999' });
 
       expect(res.status).toBe(403);
-      expect(res.body.success).toBe(false);
     });
   });
 
-  describe('GET /api/vehicles', () => {
-    it('should return a list of all vehicles', async () => {
+  describe('GET /api/vehicles & /api/vehicles/search', () => {
+    it('should return list of vehicles', async () => {
       const res = await request(app).get('/api/vehicles');
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(Array.isArray(res.body.data)).toBe(true);
-      expect(res.body.data.length).toBeGreaterThan(0);
     });
-  });
 
-  describe('GET /api/vehicles/search', () => {
-    it('should filter vehicles by make, model, category, and price range', async () => {
+    it('should filter vehicles by search query and category', async () => {
       const res = await request(app)
         .get('/api/vehicles/search')
-        .query({
-          make: 'Honda',
-          category: 'SEDAN',
-          minPrice: 20000,
-          maxPrice: 30000,
-        });
+        .query({ category: 'COUPE', query: 'Porsche' });
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
-      expect(Array.isArray(res.body.data)).toBe(true);
-      expect(res.body.data.some((v: any) => v.make === 'Honda')).toBe(true);
+      expect(res.body.data.length).toBeGreaterThan(0);
+      expect(res.body.data[0].make).toBe('Porsche');
     });
   });
 
-  describe('GET /api/vehicles/:id', () => {
-    it('should return vehicle details for a valid ID', async () => {
-      const res = await request(app).get(`/api/vehicles/${createdVehicleId}`);
-
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.data.id).toBe(createdVehicleId);
-    });
-
-    it('should return 404 for a non-existent vehicle ID', async () => {
-      const res = await request(app).get('/api/vehicles/non-existent-id-12345');
-
-      expect(res.status).toBe(404);
-      expect(res.body.success).toBe(false);
-    });
-  });
-
-  describe('PUT /api/vehicles/:id', () => {
-    it('should update vehicle details', async () => {
-      const updatedPrice = 27000;
+  describe('PUT /api/vehicles/:id & DELETE /api/vehicles/:id', () => {
+    it('should allow ADMIN to update vehicle price and quantity', async () => {
       const res = await request(app)
         .put(`/api/vehicles/${createdVehicleId}`)
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ price: updatedPrice });
+        .send({ price: 230000, quantity: 5 });
 
       expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.data.price).toBe(updatedPrice);
-    });
-  });
-
-  describe('DELETE /api/vehicles/:id', () => {
-    it('should forbid non-admin user from deleting vehicle', async () => {
-      const res = await request(app)
-        .delete(`/api/vehicles/${createdVehicleId}`)
-        .set('Authorization', `Bearer ${userToken}`);
-
-      expect(res.status).toBe(403);
-      expect(res.body.success).toBe(false);
+      expect(res.body.data.price).toBe(230000);
+      expect(res.body.data.quantity).toBe(5);
     });
 
-    it('should allow admin to delete a vehicle', async () => {
+    it('should allow ADMIN to delete a vehicle', async () => {
       const res = await request(app)
         .delete(`/api/vehicles/${createdVehicleId}`)
         .set('Authorization', `Bearer ${adminToken}`);

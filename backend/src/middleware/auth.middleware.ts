@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from './error.middleware';
-import { Role } from '../generated/client';
+import { Role } from '@prisma/client';
 
 export interface AuthenticatedRequest extends Request {
   user?: {

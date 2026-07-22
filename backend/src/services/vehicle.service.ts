@@ -1,6 +1,6 @@
 import prisma from '../config/prisma';
 import { AppError } from '../middleware/error.middleware';
-import { Category } from '../generated/client';
+import { Category } from '@prisma/client';
 
 export interface CreateVehicleDTO {
   vin: string;

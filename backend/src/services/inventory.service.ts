@@ -1,6 +1,6 @@
 import prisma from '../config/prisma';
 import { AppError } from '../middleware/error.middleware';
-import { TransactionType } from '../generated/client';
+import { TransactionType } from '@prisma/client';
 
 export class InventoryService {
   static async purchaseVehicle(userId: string, vehicleId: string, quantity: number = 1) {

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InventoryService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const error_middleware_1 = require("../middleware/error.middleware");
-const client_1 = require("../generated/client");
+const client_1 = require("@prisma/client");
 class InventoryService {
     static async purchaseVehicle(userId, vehicleId, quantity = 1) {
         if (quantity <= 0) {

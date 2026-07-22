@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/prisma';
 import { AppError } from '../middleware/error.middleware';
-import { Role } from '../generated/client';
+import { Role } from '@prisma/client';
 
 export interface RegisterDTO {
   name: string;
