@@ -98,9 +98,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <span className="text-xs text-white/60 font-medium whitespace-nowrap">Max Price Filter:</span>
           <input
             type="range"
-            min="10000"
-            max="150000"
-            step="5000"
+            min="1000000"
+            max="15000000"
+            step="250000"
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
             className="w-full sm:w-64 accent-[#7b39fc] cursor-pointer"

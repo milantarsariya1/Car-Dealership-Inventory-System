@@ -31,7 +31,7 @@ export function App() {
   // Filters State
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
-  const [maxPrice, setMaxPrice] = useState<number>(150000);
+  const [maxPrice, setMaxPrice] = useState<number>(15000000);
   const [sortBy, setSortBy] = useState<string>('newest');
   
   // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard), 'users' (User Database), 'profile' (Personal Profile)
