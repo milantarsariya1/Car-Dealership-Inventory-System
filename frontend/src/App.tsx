@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 import { Vehicle, User } from './types';
 import { ApiService } from './services/api';
 import { Navbar } from './components/Navbar';
@@ -61,6 +63,29 @@ export function App() {
   useEffect(() => {
     setDisplayLimit(ITEMS_PER_PAGE);
   }, [searchQuery, selectedCategory, maxPrice, sortBy]);
+
+  // Initialize Lenis Smooth Inertia Scrolling
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+    });
+
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
 
   // Load Saved Auth Token & Initial Inventory Data
   useEffect(() => {
