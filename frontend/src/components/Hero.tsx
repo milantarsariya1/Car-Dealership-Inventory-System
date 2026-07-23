@@ -36,7 +36,7 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
             New
           </span>
           <span className="text-white font-cabin font-medium text-[14px]">
-            ApexMotors 2026 Next-Gen Fleet v3.2
+            Say Hello to Datacore v3.2
           </span>
         </div>
 
