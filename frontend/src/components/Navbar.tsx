@@ -1,5 +1,5 @@
-import React from 'react';
-import { Car, ShieldCheck, LogIn, LogOut, User as UserIcon, PlusCircle, LayoutDashboard } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronDown, Menu, X, LogIn, LogOut, ShieldCheck, User as UserIcon, PlusCircle, LayoutDashboard } from 'lucide-react';
 import { User } from '../types';
 
 interface NavbarProps {
@@ -19,94 +19,210 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
 }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-40 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3.5">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Brand Logo */}
+    <header className="relative z-20 w-full bg-transparent px-6 lg:px-[120px] py-[16px] font-manrope">
+      <div className="w-full flex items-center justify-between">
+        
+        {/* Left: Logo & Brand */}
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('catalog')}>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-            <Car className="w-6 h-6 text-white" />
+          <div className="w-8 h-8 flex items-center justify-center">
+            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M1.04356 6.35771L13.6437 0.666504C14.0754 0.471504 14.5681 0.471504 14.9998 0.666504L27.5999 6.35771C28.2435 6.64831 28.6565 7.28471 28.6565 7.98971V19.3437C28.6565 20.0487 28.2435 20.6851 27.5999 20.9757L14.9998 26.6669C14.5681 26.8619 14.0754 26.8619 13.6437 26.6669L1.04356 20.9757C0.399961 20.6851 -0.0130386 20.0487 -0.0130386 19.3437V7.98971C-0.0130386 7.28471 0.399961 6.64831 1.04356 6.35771Z"
+                fill="white"
+              />
+            </svg>
           </div>
           <div>
-            <h1 className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
-              Apex<span className="gradient-text">Motors</span>
-            </h1>
-            <p className="text-xs text-slate-400 font-medium">Car Dealership Inventory</p>
+            <span className="font-extrabold text-xl text-white tracking-tight flex items-center gap-1">
+              Apex<span className="text-[#7b39fc]">Motors</span>
+            </span>
           </div>
         </div>
 
-        {/* Navigation & Action Controls */}
-        <div className="flex items-center space-x-3">
-          <nav className="flex items-center bg-slate-900/80 p-1 rounded-lg border border-slate-800">
+        {/* Center: Navigation Links (Desktop Only) */}
+        <nav className="hidden lg:flex items-center space-x-8 text-[14px] font-medium text-white">
+          <button
+            onClick={() => setActiveTab('catalog')}
+            className={`hover:opacity-80 transition-opacity ${activeTab === 'catalog' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
+          >
+            Home
+          </button>
+
+          <div className="relative">
             <button
-              onClick={() => setActiveTab('catalog')}
-              className={`px-3.5 py-1.5 rounded-md text-sm font-medium transition-all ${
-                activeTab === 'catalog'
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-              }`}
+              onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
             >
-              Catalog
+              Services
+              <ChevronDown className={`w-4 h-4 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
-            {user?.role === 'ADMIN' && (
-              <button
-                onClick={() => setActiveTab('admin')}
-                className={`px-3.5 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-1.5 ${
-                  activeTab === 'admin'
-                    ? 'bg-cyan-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                }`}
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                Admin Panel
-              </button>
+
+            {servicesDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-48 bg-[#2b2344] border border-[#a484d7]/30 rounded-lg shadow-xl py-2 z-50">
+                <button
+                  onClick={() => { setActiveTab('catalog'); setServicesDropdownOpen(false); }}
+                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors"
+                >
+                  Vehicle Inventory
+                </button>
+                {user?.role === 'ADMIN' && (
+                  <button
+                    onClick={() => { setActiveTab('admin'); setServicesDropdownOpen(false); }}
+                    className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5" />
+                    Admin Management
+                  </button>
+                )}
+              </div>
             )}
-          </nav>
+          </div>
+
+          <a href="#inventory" className="hover:opacity-80 transition-opacity">
+            Inventory
+          </a>
+          <a href="#contact" className="hover:opacity-80 transition-opacity">
+            Contact us
+          </a>
+        </nav>
+
+        {/* Right: Action Buttons (Desktop Only) */}
+        <div className="hidden lg:flex items-center space-x-3">
+          {user?.role === 'ADMIN' && (
+            <button
+              onClick={setActiveTab === undefined ? undefined : () => setActiveTab(activeTab === 'admin' ? 'catalog' : 'admin')}
+              className="px-3.5 py-2 rounded-[8px] text-[14px] font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors border border-white/20 flex items-center gap-1.5"
+            >
+              <LayoutDashboard className="w-4 h-4 text-[#7b39fc]" />
+              {activeTab === 'admin' ? 'Catalog' : 'Admin Panel'}
+            </button>
+          )}
 
           {user?.role === 'ADMIN' && (
             <button
               onClick={onOpenAddModal}
-              className="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-md shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95"
+              className="px-3.5 py-2 rounded-[8px] text-[14px] font-semibold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors flex items-center gap-1.5 shadow-md"
             >
               <PlusCircle className="w-4 h-4" />
               Add Vehicle
             </button>
           )}
 
-          {/* User Profile & Auth */}
           {user ? (
-            <div className="flex items-center space-x-3 pl-2 border-l border-slate-800">
-              <div className="flex items-center space-x-2 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
-                <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400">
-                  <UserIcon className="w-4 h-4" />
-                </div>
-                <div className="text-left hidden md:block">
-                  <p className="text-xs font-semibold text-slate-200 leading-tight">{user.name}</p>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400 flex items-center gap-1">
-                    {user.role === 'ADMIN' && <ShieldCheck className="w-3 h-3 text-emerald-400" />}
-                    {user.role}
-                  </span>
-                </div>
+            <div className="flex items-center space-x-3 bg-[#2b2344]/80 border border-[#a484d7]/40 px-3.5 py-1.5 rounded-[8px]">
+              <div className="w-7 h-7 rounded-full bg-[#7b39fc] flex items-center justify-center text-white font-bold text-xs">
+                <UserIcon className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <p className="text-[12px] font-semibold text-white leading-tight">{user.name}</p>
+                <span className="text-[10px] uppercase font-bold tracking-wider text-[#a484d7] flex items-center gap-1">
+                  {user.role === 'ADMIN' && <ShieldCheck className="w-3 h-3 text-emerald-400" />}
+                  {user.role}
+                </span>
               </div>
               <button
                 onClick={onLogout}
                 title="Logout"
-                className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition-colors border border-transparent hover:border-rose-900/50"
+                className="p-1.5 text-white/70 hover:text-rose-400 hover:bg-rose-500/20 rounded transition-colors"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
-            <button
-              onClick={onOpenAuth}
-              className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95"
-            >
-              <LogIn className="w-4 h-4" />
-              Sign In
-            </button>
+            <>
+              {/* Sign In Button: White bg, thin gray border (#d4d4d4), rounded 8px, Black text (#171717), Manrope Semibold 14px */}
+              <button
+                onClick={onOpenAuth}
+                className="bg-white border border-[#d4d4d4] rounded-[8px] px-4 py-2 text-[#171717] font-semibold text-[14px] hover:bg-gray-100 transition-colors"
+              >
+                Sign In
+              </button>
+
+              {/* Get Started Button: Primary Purple bg (#7b39fc), rounded 8px, White text (#fafafa), Manrope Semibold 14px */}
+              <button
+                onClick={() => {
+                  const el = document.getElementById('inventory');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else onOpenAuth();
+                }}
+                className="bg-[#7b39fc] rounded-[8px] px-4 py-2 text-[#fafafa] font-semibold text-[14px] shadow-md hover:bg-[#6826e3] transition-colors"
+              >
+                Get Started
+              </button>
+            </>
           )}
         </div>
+
+        {/* Mobile Hamburger Menu Icon */}
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="lg:hidden p-2 text-white hover:opacity-80 focus:outline-none"
+          aria-label="Open menu"
+        >
+          <Menu className="w-6 h-6 text-white" />
+        </button>
       </div>
+
+      {/* Mobile Full-Screen Overlay Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 bg-black flex flex-col justify-between p-6 font-manrope animate-fade-in lg:hidden">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <svg width="29" height="28" viewBox="0 0 29 28" fill="none">
+                <path
+                  d="M1.04356 6.35771L13.6437 0.666504C14.0754 0.471504 14.5681 0.471504 14.9998 0.666504L27.5999 6.35771C28.2435 6.64831 28.6565 7.28471 28.6565 7.98971V19.3437C28.6565 20.0487 28.2435 20.6851 27.5999 20.9757L14.9998 26.6669C14.5681 26.8619 14.0754 26.8619 13.6437 26.6669L1.04356 20.9757C0.399961 20.6851 -0.0130386 20.0487 -0.0130386 19.3437V7.98971C-0.0130386 7.28471 0.399961 6.64831 1.04356 6.35771Z"
+                  fill="white"
+                />
+              </svg>
+              <span className="font-extrabold text-xl text-white">ApexMotors</span>
+            </div>
+            <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-white">
+              <X className="w-7 h-7" />
+            </button>
+          </div>
+
+          <div className="flex flex-col items-center justify-center space-y-6 text-center text-xl font-medium text-white">
+            <button onClick={() => { setActiveTab('catalog'); setMobileMenuOpen(false); }}>Home</button>
+            <a href="#inventory" onClick={() => setMobileMenuOpen(false)}>Services & Vehicles</a>
+            {user?.role === 'ADMIN' && (
+              <button onClick={() => { setActiveTab('admin'); setMobileMenuOpen(false); }} className="text-[#a484d7]">
+                Admin Dashboard
+              </button>
+            )}
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact Us</a>
+          </div>
+
+          <div className="flex flex-col space-y-3 w-full">
+            {user ? (
+              <button
+                onClick={() => { onLogout(); setMobileMenuOpen(false); }}
+                className="w-full py-3 bg-rose-600 text-white font-semibold rounded-lg"
+              >
+                Sign Out ({user.name})
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => { onOpenAuth(); setMobileMenuOpen(false); }}
+                  className="w-full py-3 bg-white text-[#171717] font-semibold rounded-lg border border-[#d4d4d4]"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => { onOpenAuth(); setMobileMenuOpen(false); }}
+                  className="w-full py-3 bg-[#7b39fc] text-white font-semibold rounded-lg"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 };

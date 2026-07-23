@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Vehicle, User } from './types';
 import { ApiService } from './services/api';
 import { Navbar } from './components/Navbar';
+import { Hero } from './components/Hero';
 import { StatsBar } from './components/StatsBar';
 import { FilterBar } from './components/FilterBar';
 import { VehicleCard } from './components/VehicleCard';
@@ -163,8 +164,15 @@ export function App() {
     setSortBy('newest');
   };
 
+  const scrollToInventory = () => {
+    const el = document.getElementById('inventory');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen flex flex-col selection:bg-purple-500 selection:text-white bg-slate-950">
       {/* Toast Notification Banner */}
       {toast && (
         <div
@@ -183,22 +191,35 @@ export function App() {
         </div>
       )}
 
-      {/* Navigation Header */}
-      <Navbar
-        user={user}
-        onOpenAuth={() => setShowAuthModal(true)}
-        onLogout={handleLogout}
-        onOpenAddModal={() => setAdminModalState({ isOpen: true, mode: 'ADD', vehicle: null })}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      {/* Top Section with Video Hero & Navbar Overlay */}
+      <div className="relative w-full">
+        <Navbar
+          user={user}
+          onOpenAuth={() => setShowAuthModal(true)}
+          onLogout={handleLogout}
+          onOpenAddModal={() => setAdminModalState({ isOpen: true, mode: 'ADD', vehicle: null })}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
 
-      {/* Main Body */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 lg:px-8 py-8 w-full">
+        <Hero
+          onPrimaryClick={scrollToInventory}
+          onSecondaryClick={() => {
+            if (user) {
+              scrollToInventory();
+            } else {
+              setShowAuthModal(true);
+            }
+          }}
+        />
+      </div>
+
+      {/* Main Body / Inventory Section */}
+      <main id="inventory" className="flex-1 max-w-7xl mx-auto px-4 lg:px-8 py-12 w-full">
         {/* Dashboard Banner */}
         <div className="glass-panel p-8 rounded-3xl mb-8 relative overflow-hidden border border-slate-800">
           <div className="relative z-10 max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-bold uppercase tracking-wider mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7b39fc]/20 text-[#a484d7] border border-[#7b39fc]/30 text-xs font-bold uppercase tracking-wider mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               Live Dealership Inventory
             </span>
@@ -209,7 +230,7 @@ export function App() {
               Explore available stock, filter by price and category, or execute atomic purchase orders with real-time stock deduction.
             </p>
           </div>
-          <div className="absolute right-0 bottom-0 top-0 w-1/3 opacity-15 pointer-events-none hidden lg:block bg-gradient-to-l from-cyan-500 to-transparent" />
+          <div className="absolute right-0 bottom-0 top-0 w-1/3 opacity-15 pointer-events-none hidden lg:block bg-gradient-to-l from-[#7b39fc] to-transparent" />
         </div>
 
         {/* Inventory Statistics Bar */}
@@ -253,7 +274,7 @@ export function App() {
                 <p className="text-xs text-slate-500 mt-1">Try resetting filters or adjusting your price slider.</p>
                 <button
                   onClick={resetFilters}
-                  className="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-bold rounded-xl border border-slate-700 transition-colors"
+                  className="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-[#a484d7] text-xs font-bold rounded-xl border border-slate-700 transition-colors"
                 >
                   Reset All Filters
                 </button>
@@ -280,7 +301,7 @@ export function App() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-cyan-400" />
+                  <ShieldCheck className="w-5 h-5 text-[#a484d7]" />
                   Admin Inventory Management Dashboard
                 </h3>
                 <p className="text-xs text-slate-400">Add, update, restock, or remove dealership inventory items.</p>
@@ -320,7 +341,7 @@ export function App() {
                       </td>
                       <td className="p-3.5 font-mono text-slate-400">{v.vin}</td>
                       <td className="p-3.5">
-                        <span className="px-2 py-0.5 rounded bg-slate-800 font-semibold text-cyan-400 border border-slate-700">
+                        <span className="px-2 py-0.5 rounded bg-slate-800 font-semibold text-[#a484d7] border border-slate-700">
                           {v.category}
                         </span>
                       </td>
@@ -345,7 +366,7 @@ export function App() {
                         </button>
                         <button
                           onClick={() => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
-                          className="px-2.5 py-1 bg-blue-950/60 text-blue-300 hover:bg-blue-900 border border-blue-800 rounded-lg font-semibold"
+                          className="px-2.5 py-1 bg-purple-950/60 text-purple-300 hover:bg-purple-900 border border-purple-800 rounded-lg font-semibold"
                         >
                           Edit
                         </button>
@@ -366,11 +387,11 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="glass-panel border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 mt-12">
+      <footer id="contact" className="glass-panel border-t border-slate-800/80 py-8 text-center text-xs text-slate-500 mt-12">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© 2026 ApexMotors Car Dealership Inventory System. Full-Stack TDD Project.</p>
           <p className="text-slate-400">
-            Powered by <span className="text-cyan-400 font-semibold">Node.js, Express, Prisma, Neon PostgreSQL & React</span>
+            Powered by <span className="text-[#7b39fc] font-semibold">Node.js, Express, Prisma, Neon PostgreSQL & React</span>
           </p>
         </div>
       </footer>

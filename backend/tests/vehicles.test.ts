@@ -1,11 +1,9 @@
 import 'dotenv/config';
 import request from 'supertest';
 import app from '../src/app';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../src/config/prisma';
 
 jest.setTimeout(30000);
-
-const prisma = new PrismaClient();
 
 describe('Vehicle Inventory Endpoints (/api/vehicles)', () => {
   let adminToken: string;
@@ -57,7 +55,6 @@ describe('Vehicle Inventory Endpoints (/api/vehicles)', () => {
   afterAll(async () => {
     await prisma.vehicle.deleteMany({ where: { vin: testVehicle.vin } });
     await prisma.user.deleteMany({ where: { email: { in: ['veh_admin@test.com', 'veh_user@test.com'] } } });
-    await prisma.$disconnect();
   });
 
   describe('POST /api/vehicles (Admin Only)', () => {

@@ -1,9 +1,7 @@
 import 'dotenv/config';
 import request from 'supertest';
 import app from '../src/app';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../src/config/prisma';
 
 describe('Auth Endpoints (/api/auth)', () => {
   const testUser = {
@@ -19,7 +17,6 @@ describe('Auth Endpoints (/api/auth)', () => {
 
   afterAll(async () => {
     await prisma.user.deleteMany({ where: { email: testUser.email } });
-    await prisma.$disconnect();
   });
 
   describe('POST /api/auth/register', () => {

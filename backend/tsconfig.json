@@ -8,6 +8,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "api/**/*"],
-  "exclude": ["node_modules", "tests", "prisma"]
+  "include": ["src/**/*", "api/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "prisma"]
 }
