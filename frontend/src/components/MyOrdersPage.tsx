@@ -91,7 +91,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ user, onBack }) => {
   return (
     <main className="flex-1 w-full min-h-screen bg-[#0b0914] font-manrope selection:bg-[#7b39fc] selection:text-white">
       {/* Ambient background glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[300px] bg-[#7b39fc]/8 blur-[120px] pointer-events-none z-0" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[300px] bg-[#7b39fc]/8 blur-[120px] pointer-events-none z-0" />
 
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
 

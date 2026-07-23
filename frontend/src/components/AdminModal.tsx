@@ -65,7 +65,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-manrope">
-      <div className="glass-panel w-full max-w-xl rounded-[20px] overflow-hidden border border-[#a484d7]/30 bg-[#1c1634] shadow-2xl">
+      <div className="glass-panel w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-[20px] border border-[#a484d7]/30 bg-[#1c1634] shadow-2xl">
         {/* Modal Title */}
         <div className="px-6 py-4 border-b border-[#a484d7]/20 flex items-center justify-between bg-[#130e26]">
           <div className="flex items-center space-x-2.5">

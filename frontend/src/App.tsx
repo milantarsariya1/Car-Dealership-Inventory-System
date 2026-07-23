@@ -388,11 +388,11 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-[#7b39fc] selection:text-white bg-[#0b0914]">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col selection:bg-[#7b39fc] selection:text-white bg-[#0b0914] relative">
       {/* Toast Notification Banner */}
       {toast && (
         <div
-          className={`fixed bottom-5 right-5 z-50 p-4 rounded-xl shadow-2xl flex items-center space-x-3 text-sm font-semibold border backdrop-blur-md animate-bounce ${
+          className={`fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 z-50 p-4 rounded-xl shadow-2xl flex items-center space-x-3 text-sm font-semibold border backdrop-blur-md animate-bounce ${
             toast.type === 'success'
               ? 'bg-emerald-950/90 text-emerald-300 border-emerald-500/40 shadow-emerald-500/10'
               : 'bg-rose-950/90 text-rose-300 border-rose-500/40 shadow-rose-500/10'
@@ -438,7 +438,7 @@ export function App() {
             className="relative w-full px-4 sm:px-6 lg:px-[120px] pb-20 pt-4 bg-[#0b0914]"
           >
             {/* Radial ambient glow behind section header for atmospheric depth */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[260px] rounded-full bg-[#7b39fc]/10 blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-[260px] rounded-full bg-[#7b39fc]/10 blur-[100px] pointer-events-none" />
 
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between mb-10 font-manrope gap-4">
               <div>
