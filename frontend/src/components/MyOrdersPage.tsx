@@ -93,7 +93,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ user, onBack }) => {
       {/* Ambient background glow */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[300px] bg-[#7b39fc]/8 blur-[120px] pointer-events-none z-0" />
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 lg:px-10 py-10">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
 
         {/* Header */}
         <div className="mb-8">

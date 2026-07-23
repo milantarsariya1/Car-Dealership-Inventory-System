@@ -82,7 +82,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
   if (isSuccess) {
     return (
-      <main className="flex-1 w-full px-6 lg:px-[120px] py-16 min-h-screen font-manrope">
+      <main className="flex-1 w-full px-4 sm:px-6 lg:px-[120px] py-16 min-h-screen font-manrope">
         <div className="max-w-2xl mx-auto glass-panel p-8 md:p-12 rounded-[24px] border border-emerald-500/30 bg-[#161f2c]/80 text-center space-y-6 shadow-2xl animate-fade-in">
           <div className="w-20 h-20 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/40">
             <CheckCircle2 className="w-10 h-10 animate-bounce" />

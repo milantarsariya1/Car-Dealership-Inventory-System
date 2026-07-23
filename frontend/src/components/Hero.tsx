@@ -52,24 +52,24 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
       </div>
 
       {/* Centered Hero Content Container */}
-      <div className="relative z-10 flex flex-col items-center text-center max-w-[900px] px-6 mt-32 mb-16">
+      <div className="relative z-10 flex flex-col items-center text-center max-w-[900px] px-4 sm:px-6 mt-20 sm:mt-32 mb-12 sm:mb-16">
         
         {/* Headline */}
-        <h1 className="font-instrument text-white text-5xl md:text-7xl lg:text-[96px] leading-[1.1] tracking-tight mb-6">
+        <h1 className="font-instrument text-white text-3xl sm:text-5xl md:text-7xl lg:text-[96px] leading-[1.15] sm:leading-[1.1] tracking-tight mb-4 sm:mb-6">
           Drive your dream vehicle instantly <span className="italic font-normal px-1">and</span> hassle-free
         </h1>
 
         {/* Subtext */}
-        <p className="font-inter font-normal text-[18px] text-white/70 max-w-[662px] leading-relaxed mb-10">
+        <p className="font-inter font-normal text-sm sm:text-base md:text-[18px] text-white/70 max-w-[662px] leading-relaxed mb-8 sm:mb-10">
           Discover handpicked luxury sedans, electric vehicles, sports coupes, and rugged trucks. Enjoy real-time inventory updates, atomic purchase orders, and 24/7 dealership support.
         </p>
 
         {/* Call to Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
           {/* Button 1: Browse Vehicle Inventory */}
           <button
             onClick={onPrimaryClick}
-            className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-medium text-[16px] rounded-[10px] px-8 py-3.5 transition-all shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full sm:w-auto bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-medium text-sm sm:text-[16px] rounded-[10px] px-6 sm:px-8 py-3.5 transition-all shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02] active:scale-[0.98]"
           >
             Browse Vehicle Inventory
           </button>
@@ -77,7 +77,7 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
           {/* Button 2: Get Started Now */}
           <button
             onClick={onSecondaryClick}
-            className="bg-[#2b2344] hover:bg-[#392e5a] text-[#f6f7f9] font-cabin font-medium text-[16px] rounded-[10px] px-8 py-3.5 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full sm:w-auto bg-[#2b2344] hover:bg-[#392e5a] text-[#f6f7f9] font-cabin font-medium text-sm sm:text-[16px] rounded-[10px] px-6 sm:px-8 py-3.5 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             Get Started Now
           </button>

@@ -23,7 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
 
   return (
-    <header className="relative z-20 w-full bg-transparent px-6 lg:px-[120px] py-[16px] font-manrope">
+    <header className="relative z-20 w-full bg-transparent px-4 sm:px-6 lg:px-[120px] py-[16px] font-manrope">
       <div className="w-full flex items-center justify-between">
         
         {/* Left: Logo & Brand */}

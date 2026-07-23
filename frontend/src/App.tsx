@@ -435,7 +435,7 @@ export function App() {
           {/* Featured Home Inventory Section — flows directly from hero with no gap */}
           <section
             id="inventory"
-            className="relative w-full px-6 lg:px-[120px] pb-20 pt-4 bg-[#0b0914]"
+            className="relative w-full px-4 sm:px-6 lg:px-[120px] pb-20 pt-4 bg-[#0b0914]"
           >
             {/* Radial ambient glow behind section header for atmospheric depth */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[260px] rounded-full bg-[#7b39fc]/10 blur-[100px] pointer-events-none" />
@@ -555,7 +555,7 @@ export function App() {
           </section>
 
           {/* Main Inventory Controls & Grid Section (Below Video Banner) */}
-          <section className="w-full px-6 lg:px-[120px] py-12 space-y-8">
+          <section className="w-full px-4 sm:px-6 lg:px-[120px] py-12 space-y-8">
             {/* Inventory Statistics Bar */}
             <StatsBar vehicles={vehicles} />
 
@@ -629,7 +629,7 @@ export function App() {
 
       {/* VIEW 3: ADMIN MANAGEMENT DASHBOARD */}
       {activeTab === 'admin' && (
-        <main className="flex-1 w-full px-6 lg:px-[120px] py-10 min-h-screen">
+        <main className="flex-1 w-full px-4 sm:px-6 lg:px-[120px] py-10 min-h-screen">
           <div className="glass-panel p-6 rounded-[20px] border border-[#a484d7]/20 bg-[#1c1634]/70 font-manrope">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -731,7 +731,7 @@ export function App() {
 
       {/* VIEW 4: USER DATABASE */}
       {activeTab === 'users' && (
-        <main className="flex-1 w-full px-6 lg:px-[120px] py-10 min-h-screen">
+        <main className="flex-1 w-full px-4 sm:px-6 lg:px-[120px] py-10 min-h-screen">
           <div className="glass-panel p-6 rounded-[20px] border border-[#a484d7]/20 bg-[#1c1634]/70 font-manrope">
             <div className="flex items-center justify-between mb-6">
               <div>
