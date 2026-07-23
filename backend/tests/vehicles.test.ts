@@ -83,6 +83,26 @@ describe('Vehicle Inventory Endpoints (/api/vehicles)', () => {
 
       expect(res.status).toBe(403);
     });
+
+    it('should reject vehicle creation with a negative price', async () => {
+      const res = await request(app)
+        .post('/api/vehicles')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ ...testVehicle, vin: 'NEGPRICEVIN12345', price: -100 });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
+    it('should reject vehicle creation with a negative or fractional quantity', async () => {
+      const res = await request(app)
+        .post('/api/vehicles')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ ...testVehicle, vin: 'NEGQTYVIN123456', quantity: -3 });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
   });
 
   describe('GET /api/vehicles & /api/vehicles/search', () => {

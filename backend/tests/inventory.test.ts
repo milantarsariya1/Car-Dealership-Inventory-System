@@ -118,4 +118,51 @@ describe('Inventory Transactions - Purchase & Restock', () => {
       expect(res.status).toBe(403);
     });
   });
+
+  describe('Purchase authorization & concurrency safety', () => {
+    it('should reject purchase attempts from ADMIN accounts (403 Forbidden)', async () => {
+      const res = await request(app)
+        .post(`/api/vehicles/${vehicleId}/purchase`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ quantity: 1 });
+
+      expect(res.status).toBe(403);
+    });
+
+    it('should reject purchase with a non-integer or non-positive quantity', async () => {
+      const res = await request(app)
+        .post(`/api/vehicles/${vehicleId}/purchase`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({ quantity: 1.5 });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should never oversell when two concurrent purchases race for the last unit', async () => {
+      // Reset stock to exactly one unit
+      await prisma.vehicle.update({
+        where: { id: vehicleId },
+        data: { quantity: 1 },
+      });
+
+      const [res1, res2] = await Promise.all([
+        request(app)
+          .post(`/api/vehicles/${vehicleId}/purchase`)
+          .set('Authorization', `Bearer ${userToken}`)
+          .send({ quantity: 1 }),
+        request(app)
+          .post(`/api/vehicles/${vehicleId}/purchase`)
+          .set('Authorization', `Bearer ${userToken}`)
+          .send({ quantity: 1 }),
+      ]);
+
+      // Exactly one purchase succeeds; the other is rejected as out of stock
+      const statuses = [res1.status, res2.status].sort();
+      expect(statuses).toEqual([200, 400]);
+
+      // Stock must be exactly 0 — never negative
+      const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
+      expect(vehicle?.quantity).toBe(0);
+    });
+  });
 });

@@ -45,6 +45,28 @@ describe('Auth Endpoints (/api/auth)', () => {
       expect(res.status).toBe(400);
       expect(res.body.success).toBe(false);
     });
+
+    it('should reject registration with an invalid email format', async () => {
+      const res = await request(app).post('/api/auth/register').send({
+        name: 'Bad Email',
+        email: 'not-an-email',
+        password: 'password123',
+      });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
+    it('should reject registration with a password shorter than 6 characters', async () => {
+      const res = await request(app).post('/api/auth/register').send({
+        name: 'Short Pass',
+        email: 'shortpass@test.com',
+        password: '123',
+      });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
   });
 
   describe('POST /api/auth/login', () => {
