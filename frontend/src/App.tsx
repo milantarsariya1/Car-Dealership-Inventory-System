@@ -54,6 +54,20 @@ export function App() {
   // Toast Notification
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
+  // Scroll tracking for Parallax Depth effects
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const inventoryParallaxOffset = scrollY * 0.25;
+  const inventoryParallaxScale = 1 + Math.min(scrollY * 0.0002, 0.12);
+
   const showNotification = (type: 'success' | 'error', message: string) => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 4000);
@@ -390,8 +404,13 @@ export function App() {
       {/* VIEW 2: DEDICATED FULL INVENTORY PAGE */}
       {activeTab === 'inventory' && (
         <main className="relative flex-1 w-full px-6 lg:px-[120px] py-10 overflow-hidden min-h-screen">
-          {/* Background Video specifically for Inventory Section (Continuous 60fps Loop) */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
+          {/* Background Video specifically for Inventory Section (Continuous 60fps Loop with Parallax Depth) */}
+          <div 
+            className="absolute inset-0 z-0 pointer-events-none transition-transform duration-75 ease-out"
+            style={{
+              transform: `translate3d(0, ${inventoryParallaxOffset}px, 0) scale(${inventoryParallaxScale})`,
+            }}
+          >
             <video
               autoPlay
               loop
