@@ -4,3 +4,7 @@ node_modules
 /src/**/*.js
 /api/**/*.js
 /prisma/**/*.js
+/generated
+/.windsurf
+/.claude
+/coverage
