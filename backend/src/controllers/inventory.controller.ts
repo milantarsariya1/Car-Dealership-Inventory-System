@@ -49,5 +49,19 @@ export class InventoryController {
       next(error);
     }
   }
+
+  static async getAllOrdersForAdmin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const orders = await InventoryService.getAllOrdersForAdmin();
+      res.status(200).json({
+        success: true,
+        data: orders,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
+
+
 

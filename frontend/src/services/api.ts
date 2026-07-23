@@ -160,4 +160,12 @@ export class ApiService {
     });
     return res.json();
   }
+
+  static async getAllOrdersForAdmin(): Promise<ApiResponse<any[]>> {
+    const res = await fetch(`${API_BASE}/vehicles/admin/orders`, {
+      headers: this.getHeaders(),
+    });
+    return res.json();
+  }
 }
+

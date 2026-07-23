@@ -23,5 +23,9 @@ router.post('/:id/restock', authenticateToken, requireRole([Role.ADMIN]), Invent
 // My Orders — logged in user's purchase history
 router.get('/my-orders/list', authenticateToken, InventoryController.getMyOrders);
 
+// Admin Orders — all customer purchases & dispatch management
+router.get('/admin/orders', authenticateToken, requireRole([Role.ADMIN]), InventoryController.getAllOrdersForAdmin);
+
 export default router;
+
 

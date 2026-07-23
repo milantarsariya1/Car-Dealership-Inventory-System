@@ -14,6 +14,7 @@ import { AdminModal } from './components/AdminModal';
 import { AuthModal } from './components/AuthModal';
 import { CheckoutPage } from './components/CheckoutPage';
 import { MyOrdersPage } from './components/MyOrdersPage';
+import { AdminOrdersTable } from './components/AdminOrdersTable';
 import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles, Users, User as UserIcon, Edit3, Save, X } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
@@ -718,6 +719,9 @@ export function App() {
               </table>
             </div>
           </div>
+
+          {/* All Customer Orders & Pending Dispatches Section */}
+          <AdminOrdersTable />
         </main>
       )}
 
