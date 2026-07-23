@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../config/prisma';
 import { env } from '../config/env';
 import { AppError } from '../middleware/error.middleware';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 6;
@@ -166,7 +166,7 @@ export class AuthService {
       throw new AppError('User not found', 404);
     }
 
-    const updateData: any = {};
+    const updateData: Prisma.UserUpdateInput = {};
 
     if (data.name !== undefined) updateData.name = data.name;
     if (data.phone !== undefined) updateData.phone = data.phone;
@@ -230,7 +230,7 @@ export class AuthService {
       throw new AppError('Target user not found', 404);
     }
 
-    const updateData: any = {};
+    const updateData: Prisma.UserUpdateInput = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.role !== undefined) updateData.role = data.role;
     if (data.phone !== undefined) updateData.phone = data.phone;

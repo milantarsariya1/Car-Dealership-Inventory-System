@@ -1,6 +1,6 @@
 import prisma from '../config/prisma';
 import { AppError } from '../middleware/error.middleware';
-import { Category } from '@prisma/client';
+import { Category, Prisma } from '@prisma/client';
 
 export interface CreateVehicleDTO {
   vin: string;
@@ -79,7 +79,7 @@ export class VehicleService {
   }
 
   static async searchVehicles(filters: SearchVehicleFilters) {
-    const whereClause: any = {};
+    const whereClause: Prisma.VehicleWhereInput = {};
 
     if (filters.make) {
       whereClause.make = { contains: filters.make, mode: 'insensitive' };
