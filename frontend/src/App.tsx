@@ -232,20 +232,20 @@ export function App() {
       {/* Main Body / Inventory Section with Video Background */}
       <main id="inventory" className="relative flex-1 w-full px-6 lg:px-[120px] py-12 overflow-hidden">
         {/* Background Video specifically for Inventory Section */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover opacity-30"
+            className="w-full h-full object-cover opacity-75 min-h-full"
           >
             <source
               src="https://assets.mixkit.co/videos/74/74-720.mp4"
               type="video/mp4"
             />
           </video>
-          <div className="absolute inset-0 bg-[#0b0914]/85 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-[#0b0914]/50 backdrop-blur-[1px]" />
         </div>
 
         {/* Content Container (z-10) */}
