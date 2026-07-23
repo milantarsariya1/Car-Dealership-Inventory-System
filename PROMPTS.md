@@ -88,7 +88,81 @@ This document contains the chronological record of AI interaction prompts and de
 > **User**: Shared technical process guidelines (TDD pattern, clean code, Git version control with AI trailers, README "My AI Usage" section, PROMPTS.md history file, live app links).
 > 
 > **AI Action**:
-> - Verified all 15 backend Jest test cases pass cleanly.
+> - Verified all backend Jest test cases pass cleanly.
 > - Updated `README.md` with complete architecture details, setup instructions, test execution reports, and mandatory "My AI Usage" section.
 > - Updated `PROMPTS.md` with complete chronological prompt history.
 > - Performed Git commits following AI co-authorship guidelines.
+
+---
+
+## Session 6: Customer Delivery Address & Checkout Page
+
+### Prompt 12: Dedicated Checkout Page with Car Image & Spec Layout
+> **User**: "after clicking the purchase option it should open another page that reflect the payment option and the image of car should be big if needed then assign to left and detailes to right"
+> 
+> **AI Action**:
+> - Created `CheckoutPage.tsx` component featuring split view (left: large vehicle image + specs, right: payment method selection & delivery address).
+> - Added dedicated `checkout` tab state in `App.tsx` with seamless navigation.
+
+### Prompt 13: Delivery Address & Location Database Fields
+> **User**: "user needs to add all the required data like address and location and more etc that r required to deliver the product to the customer add that database into use accounts this also should be editable"
+> 
+> **AI Action**:
+> - Expanded Prisma `User` schema with delivery fields (`phone`, `address`, `city`, `state`, `pincode`, `country`).
+> - Updated backend auth controller/service & routes with `PUT /api/auth/profile` and `PUT /api/auth/users/:id`.
+> - Added address editor in user Profile View, Checkout Form, and Admin User Manager.
+
+---
+
+## Session 7: Dedicated Inventory Page Video Banner & Edge Smoothing
+
+### Prompt 14: Dedicated Inventory Page & Lenis Smooth Scroll Lag Fix
+> **User**: "this inventory scrolling feels buggy or not feeling smooth fix this issue, also first this video should come like home page, above the video and all the inventory after that on that video write the best styled possible website name + inventory and some other text"
+> 
+> **AI Action**:
+> - Restructured dedicated Inventory view with a top HTML5 video hero banner displaying "ApexMotors Inventory" overlay styling.
+> - Fixed Lenis smooth scroll performance by removing heavy layout recalculation transforms.
+
+### Prompt 15: Dual-Layer Edge Gradient Dissolve
+> **User**: "smooth out the edges of video and the other section given in this image"
+> 
+> **AI Action**:
+> - Added dual-layer gradient overlays (`from-black/30 via-transparent to-[#0b0914]` and a 192px bottom fade `from-[#0b0914]`) on both Home hero and Inventory video banners for seamless transition into content cards.
+
+---
+
+## Session 8: My Purchases & Customer Dispatch Tracking
+
+### Prompt 16: Customer Purchases & Dispatch Tracking Page
+> **User**: "look i have purchase some car but where can i see my purchases car after purchasing so make the purchased or something like this page that shows my car and dispatched details"
+> 
+> **AI Action**:
+> - Built backend endpoint `GET /api/vehicles/my-orders/list` returning user's purchased transactions with vehicle specs, price breakdown, and real-time dispatch progress.
+> - Created `MyOrdersPage.tsx` with vehicle image cards, financial breakdown, 4-step dispatch progress bar (`Order Confirmed` ➔ `Processing` ➔ `Dispatched` ➔ `Out for Delivery`), and delivery address banner.
+> - Connected "My Orders" tab to Navbar and Checkout success screen.
+
+### Prompt 17: Navigation Bar Item Reordering
+> **User**: "service should be at last after contact us what do you think?"
+> 
+> **AI Action**:
+> - Reordered Navbar links to: **Home** ➔ **Inventory** ➔ **My Orders** ➔ **Contact us** ➔ **Services ˅** at the far right.
+
+---
+
+## Session 9: Admin Pending Orders Manager & Seller Role Constraints
+
+### Prompt 18: Admin Customer Orders & Pending Dispatches Table
+> **User**: "in main admin panel it should reflect the all the orders details from all the user who have purchased the car that should reflect in main admin panel = pending orders"
+> 
+> **AI Action**:
+> - Implemented backend admin endpoint `GET /api/vehicles/admin/orders` (Admin restricted) returning all customer transactions with purchaser profile & delivery address details.
+> - Created `AdminOrdersTable.tsx` and integrated it inside the main Admin Management Dashboard.
+
+### Prompt 19: Admin Seller Role Rules (Hide Purchase Button for Admin)
+> **User**: "this not reflecting the all customers pending order. and for main admin purchase should not be there because he is the main admin who supposed to sell the car button for all the car product"
+> 
+> **AI Action**:
+> - Updated `VehicleCard.tsx` to hide the Purchase button for Admin roles, replacing it with a `🛡️ Dealer Seller` badge and Admin Inventory Toolbar.
+> - Replaced Admin Navbar link with **"Customer Orders (Admin)"** leading directly to the Admin Orders Manager.
+> - Blocked purchase flow for Admin with notification: *"Admin accounts are dealership managers. Only customer accounts can place purchase orders."*
+
