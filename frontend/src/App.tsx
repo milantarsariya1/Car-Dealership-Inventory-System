@@ -413,7 +413,7 @@ export function App() {
 
       {/* VIEW 1: HOME PAGE (Hero + 3 Featured Inventory Motors) */}
       {activeTab === 'catalog' && (
-        <div>
+        <div className="relative bg-[#0b0914]">
           {/* Video Hero Section */}
           <Hero
             onPrimaryClick={navigateToFullInventoryPage}
@@ -426,62 +426,71 @@ export function App() {
             }}
           />
 
-          {/* Featured Home Inventory Section (Limited to 3 Models) */}
-          <section id="inventory" className="w-full px-6 lg:px-[120px] py-16">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 font-manrope gap-4">
+          {/* Featured Home Inventory Section — flows directly from hero with no gap */}
+          <section
+            id="inventory"
+            className="relative w-full px-6 lg:px-[120px] pb-20 pt-4 bg-[#0b0914]"
+          >
+            {/* Radial ambient glow behind section header for atmospheric depth */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[260px] rounded-full bg-[#7b39fc]/10 blur-[100px] pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between mb-10 font-manrope gap-4">
               <div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7b39fc]/20 text-[#a484d7] border border-[#7b39fc]/30 text-xs font-bold uppercase tracking-wider mb-2 font-cabin">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7b39fc]/20 text-[#a484d7] border border-[#7b39fc]/30 text-xs font-bold uppercase tracking-wider mb-3 font-cabin">
                   <Sparkles className="w-3.5 h-3.5" />
                   Featured Dealership Collection
                 </span>
-                <h3 className="text-3xl font-extrabold text-white tracking-tight">
+                <h2 className="text-4xl font-extrabold text-white tracking-tight">
                   Handpicked Luxury Motors
-                </h3>
+                </h2>
+                <p className="text-sm text-white/60 font-inter mt-1.5">Real-time certified inventory — purchase directly from the dealership floor.</p>
               </div>
 
               <button
                 onClick={navigateToFullInventoryPage}
-                className="flex items-center gap-2 text-[#a484d7] hover:text-white font-cabin font-bold text-sm bg-[#2b2344]/80 hover:bg-[#7b39fc] px-5 py-2.5 rounded-[10px] border border-[#a484d7]/30 transition-all shadow-md"
+                className="flex items-center gap-2 text-[#a484d7] hover:text-white font-cabin font-bold text-sm bg-[#2b2344]/80 hover:bg-[#7b39fc] px-5 py-2.5 rounded-[10px] border border-[#a484d7]/30 transition-all shadow-md shrink-0"
               >
-                <span>View Full Inventory Page ({filteredVehicles.length} Motors)</span>
+                <span>View Full Inventory ({filteredVehicles.length} Motors)</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
 
-            {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((n) => (
-                  <div key={n} className="glass-card h-80 rounded-2xl animate-pulse bg-[#19142d]/60" />
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredHomeVehicles.map((vehicle) => (
-                  <VehicleCard
-                    key={vehicle.id}
-                    vehicle={vehicle}
-                    user={user}
-                    onSelectPurchase={(v) => startCheckout(v)}
-                    onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
-                    onDelete={(id) => handleDeleteVehicle(id)}
-                    onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="relative z-10">
+              {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((n) => (
+                    <div key={n} className="glass-card h-80 rounded-2xl animate-pulse bg-[#19142d]/60" />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {featuredHomeVehicles.map((vehicle) => (
+                    <VehicleCard
+                      key={vehicle.id}
+                      vehicle={vehicle}
+                      user={user}
+                      onSelectPurchase={(v) => startCheckout(v)}
+                      onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
+                      onDelete={(id) => handleDeleteVehicle(id)}
+                      onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
+                    />
+                  ))}
+                </div>
+              )}
 
-            {/* Load More Button -> Navigates to Dedicated Full Inventory Page */}
-            <div className="flex flex-col items-center justify-center mt-12 space-y-3 font-manrope">
-              <button
-                onClick={navigateToFullInventoryPage}
-                className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-semibold text-[16px] rounded-[10px] px-9 py-4 transition-all shadow-xl hover:shadow-purple-500/30 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2.5"
-              >
-                <span>Load More Vehicles ({filteredVehicles.length - 3} remaining)</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <p className="text-xs text-white/50 font-inter">
-                Showing 3 featured models. Click above to open the dedicated full inventory page.
-              </p>
+              {/* Load More Button → Navigates to Dedicated Full Inventory Page */}
+              <div className="flex flex-col items-center justify-center mt-14 space-y-3 font-manrope">
+                <button
+                  onClick={navigateToFullInventoryPage}
+                  className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-semibold text-[16px] rounded-[10px] px-9 py-4 transition-all shadow-xl hover:shadow-purple-500/30 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2.5"
+                >
+                  <span>Browse All Vehicles ({filteredVehicles.length - 3} more models)</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <p className="text-xs text-white/50 font-inter">
+                  Showing 3 featured models · Click above to explore the full dealership fleet
+                </p>
+              </div>
             </div>
           </section>
         </div>
