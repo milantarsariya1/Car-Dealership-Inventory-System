@@ -10,13 +10,15 @@ import { Footer } from './components/Footer';
 import { PurchaseModal } from './components/PurchaseModal';
 import { AdminModal } from './components/AdminModal';
 import { AuthModal } from './components/AuthModal';
-import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
+import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles, Users } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
 
 export function App() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [dbUsers, setDbUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [usersLoading, setUsersLoading] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
   // Filters State
@@ -25,8 +27,8 @@ export function App() {
   const [maxPrice, setMaxPrice] = useState<number>(150000);
   const [sortBy, setSortBy] = useState<string>('newest');
   
-  // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard)
-  const [activeTab, setActiveTab] = useState<'catalog' | 'inventory' | 'admin'>('catalog');
+  // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard), 'users' (User Database)
+  const [activeTab, setActiveTab] = useState<'catalog' | 'inventory' | 'admin' | 'users'>('catalog');
 
   // Pagination State for Dedicated Inventory Page
   const [displayLimit, setDisplayLimit] = useState<number>(ITEMS_PER_PAGE);
@@ -65,6 +67,26 @@ export function App() {
     }
     fetchVehicles();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'users' && user) {
+      fetchUsers();
+    }
+  }, [activeTab, user]);
+
+  const fetchUsers = async () => {
+    setUsersLoading(true);
+    try {
+      const res = await ApiService.getAllUsers();
+      if (res.success && res.data) {
+        setDbUsers(res.data);
+      }
+    } catch (err) {
+      showNotification('error', 'Failed to fetch user database.');
+    } finally {
+      setUsersLoading(false);
+    }
+  };
 
   const fetchVehicles = async () => {
     setLoading(true);
@@ -509,6 +531,75 @@ export function App() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </main>
+      )}
+
+      {/* VIEW 4: USER DATABASE */}
+      {activeTab === 'users' && (
+        <main className="flex-1 w-full px-6 lg:px-[120px] py-10 min-h-screen">
+          <div className="glass-panel p-6 rounded-[20px] border border-[#a484d7]/20 bg-[#1c1634]/70 font-manrope">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <button
+                  onClick={() => setActiveTab('catalog')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#a484d7] hover:text-white mb-2 font-cabin transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Home</span>
+                </button>
+                <h3 className="text-xl font-extrabold text-white flex items-center gap-2 tracking-tight">
+                  <Users className="w-5 h-5 text-[#a484d7]" />
+                  User Database
+                </h3>
+                <p className="text-xs text-white/60 font-inter">View all registered dealership users and their roles.</p>
+              </div>
+            </div>
+
+            {usersLoading ? (
+              <div className="text-white/60 text-sm py-4 animate-pulse">Loading user database...</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-slate-300">
+                  <thead className="bg-[#130e26] text-white/60 uppercase text-[10px] tracking-wider border-b border-[#a484d7]/20 font-cabin">
+                    <tr>
+                      <th className="p-3.5">User Details</th>
+                      <th className="p-3.5">Email</th>
+                      <th className="p-3.5">Role</th>
+                      <th className="p-3.5">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#a484d7]/15">
+                    {dbUsers.map((u) => (
+                      <tr key={u.id} className="hover:bg-[#2b2344]/40 transition-colors">
+                        <td className="p-3.5 font-bold text-white flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-[#7b39fc] flex items-center justify-center text-white font-bold text-xs uppercase">
+                            {u.name.charAt(0)}
+                          </div>
+                          {u.name}
+                        </td>
+                        <td className="p-3.5 font-mono text-white/60">{u.email}</td>
+                        <td className="p-3.5">
+                          {u.role === 'ADMIN' ? (
+                            <span className="px-2.5 py-1 rounded-[6px] bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/40 text-[10px] flex items-center w-max gap-1">
+                              <ShieldCheck className="w-3 h-3" />
+                              ADMIN
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 rounded-[6px] bg-[#2b2344] text-[#a484d7] font-bold border border-[#a484d7]/30 text-[10px] w-max block">
+                              USER
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3.5 font-mono text-white/50">
+                          {new Date(u.createdAt || '').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </main>
       )}

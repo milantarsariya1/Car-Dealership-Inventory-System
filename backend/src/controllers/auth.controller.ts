@@ -26,4 +26,16 @@ export class AuthController {
       next(error);
     }
   }
+
+  static async getAllUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await AuthService.getAllUsers();
+      res.status(200).json({
+        success: true,
+        data: users,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

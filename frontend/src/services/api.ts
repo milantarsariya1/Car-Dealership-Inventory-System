@@ -33,6 +33,13 @@ export class ApiService {
     return res.json();
   }
 
+  static async getAllUsers(): Promise<ApiResponse<User[]>> {
+    const res = await fetch(`${API_BASE}/auth/users`, {
+      headers: this.getHeaders(),
+    });
+    return res.json();
+  }
+
   // Vehicles API
   static async getAllVehicles(): Promise<ApiResponse<Vehicle[]>> {
     const res = await fetch(`${API_BASE}/vehicles`, {

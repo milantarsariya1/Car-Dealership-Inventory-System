@@ -7,8 +7,8 @@ interface NavbarProps {
   onOpenAuth: () => void;
   onLogout: () => void;
   onOpenAddModal: () => void;
-  activeTab: 'catalog' | 'inventory' | 'admin';
-  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin') => void;
+  activeTab: 'catalog' | 'inventory' | 'admin' | 'users';
+  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin' | 'users') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -118,7 +118,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           {user ? (
-            <div className="flex items-center space-x-3 bg-[#2b2344]/80 border border-[#a484d7]/40 px-3.5 py-1.5 rounded-[8px]">
+            <div 
+              onClick={() => setActiveTab('users')}
+              className="flex items-center space-x-3 bg-[#2b2344]/80 border border-[#a484d7]/40 px-3.5 py-1.5 rounded-[8px] cursor-pointer hover:bg-[#392e5a] transition-colors"
+            >
               <div className="w-7 h-7 rounded-full bg-[#7b39fc] flex items-center justify-center text-white font-bold text-xs">
                 <UserIcon className="w-4 h-4" />
               </div>
@@ -130,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </div>
               <button
-                onClick={onLogout}
+                onClick={(e) => { e.stopPropagation(); onLogout(); }}
                 title="Logout"
                 className="p-1.5 text-white/70 hover:text-rose-400 hover:bg-rose-500/20 rounded transition-colors"
               >
@@ -189,6 +192,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex flex-col items-center justify-center space-y-6 text-center text-xl font-medium text-white">
             <button onClick={() => { setActiveTab('catalog'); setMobileMenuOpen(false); }}>Home</button>
             <button onClick={() => { setActiveTab('inventory'); setMobileMenuOpen(false); }}>Full Inventory Page</button>
+            {user && (
+              <button onClick={() => { setActiveTab('users'); setMobileMenuOpen(false); }}>User Database</button>
+            )}
             {user?.role === 'ADMIN' && (
               <button onClick={() => { setActiveTab('admin'); setMobileMenuOpen(false); }} className="text-[#a484d7]">
                 Admin Dashboard
