@@ -38,6 +38,14 @@ An enterprise-grade, full-stack **Car Dealership Inventory Management & Customer
 
 ---
 
+## 📸 Application Screenshots
+
+<p align="center">
+  <img src="./docs/screenshots/app-preview.png" alt="ApexMotors Production Web Application Showcase" width="100%" />
+</p>
+
+---
+
 ## 🏗️ System Architecture & Workflow
 
 ```mermaid
