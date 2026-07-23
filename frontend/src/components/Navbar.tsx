@@ -52,6 +52,27 @@ export const Navbar: React.FC<NavbarProps> = ({
             Home
           </button>
 
+          <button
+            onClick={() => setActiveTab('inventory')}
+            className={`hover:opacity-80 transition-opacity ${activeTab === 'inventory' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
+          >
+            Inventory
+          </button>
+
+          {user && (
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`hover:opacity-80 transition-opacity ${activeTab === 'orders' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
+            >
+              My Orders
+            </button>
+          )}
+
+          <a href="#contact" className="hover:opacity-80 transition-opacity">
+            Contact us
+          </a>
+
+          {/* Services Dropdown moved to the end */}
           <div className="relative">
             <button
               onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
@@ -62,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {servicesDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-52 bg-[#2b2344] border border-[#a484d7]/30 rounded-lg shadow-xl py-2 z-50">
+              <div className="absolute top-full right-0 mt-2 w-52 bg-[#2b2344] border border-[#a484d7]/30 rounded-lg shadow-xl py-2 z-50">
                 <button
                   onClick={() => { setActiveTab('inventory'); setServicesDropdownOpen(false); }}
                   className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
@@ -91,26 +112,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             )}
           </div>
-
-          <button
-            onClick={() => setActiveTab('inventory')}
-            className={`hover:opacity-80 transition-opacity ${activeTab === 'inventory' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
-          >
-            Inventory
-          </button>
-
-          {user && (
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`hover:opacity-80 transition-opacity ${activeTab === 'orders' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
-            >
-              My Orders
-            </button>
-          )}
-
-          <a href="#contact" className="hover:opacity-80 transition-opacity">
-            Contact us
-          </a>
         </nav>
 
         {/* Right: Action Buttons (Desktop Only) */}
