@@ -10,7 +10,7 @@ import { Footer } from './components/Footer';
 import { PurchaseModal } from './components/PurchaseModal';
 import { AdminModal } from './components/AdminModal';
 import { AuthModal } from './components/AuthModal';
-import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle } from 'lucide-react';
+import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -24,9 +24,11 @@ export function App() {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [maxPrice, setMaxPrice] = useState<number>(150000);
   const [sortBy, setSortBy] = useState<string>('newest');
-  const [activeTab, setActiveTab] = useState<'catalog' | 'admin'>('catalog');
+  
+  // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard)
+  const [activeTab, setActiveTab] = useState<'catalog' | 'inventory' | 'admin'>('catalog');
 
-  // Pagination State
+  // Pagination State for Dedicated Inventory Page
   const [displayLimit, setDisplayLimit] = useState<number>(ITEMS_PER_PAGE);
 
   // Modals State
@@ -168,9 +170,12 @@ export function App() {
       return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
     });
 
-  // Paginated visible items
-  const visibleVehicles = filteredVehicles.slice(0, displayLimit);
-  const hasMoreVehicles = displayLimit < filteredVehicles.length;
+  // Home Page Limit: Only 3 Featured Motors
+  const featuredHomeVehicles = filteredVehicles.slice(0, 3);
+
+  // Inventory Page Limit: Paginated items (batches of 6)
+  const visibleInventoryVehicles = filteredVehicles.slice(0, displayLimit);
+  const hasMoreInventoryVehicles = displayLimit < filteredVehicles.length;
 
   const resetFilters = () => {
     setSearchQuery('');
@@ -179,11 +184,9 @@ export function App() {
     setSortBy('newest');
   };
 
-  const scrollToInventory = () => {
-    const el = document.getElementById('inventory');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+  const navigateToFullInventoryPage = () => {
+    setActiveTab('inventory');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -206,223 +209,309 @@ export function App() {
         </div>
       )}
 
-      {/* Top Section with Video Hero & Navbar Overlay */}
-      <div className="relative w-full">
-        <Navbar
-          user={user}
-          onOpenAuth={() => setShowAuthModal(true)}
-          onLogout={handleLogout}
-          onOpenAddModal={() => setAdminModalState({ isOpen: true, mode: 'ADD', vehicle: null })}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+      {/* Top Navbar Header */}
+      <Navbar
+        user={user}
+        onOpenAuth={() => setShowAuthModal(true)}
+        onLogout={handleLogout}
+        onOpenAddModal={() => setAdminModalState({ isOpen: true, mode: 'ADD', vehicle: null })}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
-        <Hero
-          onPrimaryClick={scrollToInventory}
-          onSecondaryClick={() => {
-            if (user) {
-              scrollToInventory();
-            } else {
-              setShowAuthModal(true);
-            }
-          }}
-        />
-      </div>
-
-      {/* Main Body / Inventory Section with Video Background */}
-      <main id="inventory" className="relative flex-1 w-full px-6 lg:px-[120px] py-12 overflow-hidden">
-        {/* Background Video specifically for Inventory Section */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover opacity-75 min-h-full"
-          >
-            <source
-              src="https://assets.mixkit.co/videos/74/74-720.mp4"
-              type="video/mp4"
-            />
-          </video>
-          <div className="absolute inset-0 bg-[#0b0914]/50 backdrop-blur-[1px]" />
-        </div>
-
-        {/* Content Container (z-10) */}
-        <div className="relative z-10 w-full space-y-8">
-          {/* Inventory Statistics Bar */}
-          <StatsBar vehicles={vehicles} />
-
-          {/* Filter and Search Controls */}
-          <FilterBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            maxPrice={maxPrice}
-            setMaxPrice={setMaxPrice}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            onReset={resetFilters}
+      {/* VIEW 1: HOME PAGE (Hero + 3 Featured Inventory Motors) */}
+      {activeTab === 'catalog' && (
+        <div>
+          {/* Video Hero Section */}
+          <Hero
+            onPrimaryClick={navigateToFullInventoryPage}
+            onSecondaryClick={() => {
+              if (user) {
+                navigateToFullInventoryPage();
+              } else {
+                setShowAuthModal(true);
+              }
+            }}
           />
 
-          {/* Content View: Catalog vs Admin Panel */}
-          {activeTab === 'catalog' ? (
-            <div>
-              <div className="flex items-center justify-between mb-6 font-manrope">
-                <h3 className="text-xl font-extrabold text-white flex items-center gap-2 tracking-tight">
-                  Available Vehicle Inventory
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#2b2344] text-[#a484d7] border border-[#a484d7]/30">
-                    {filteredVehicles.length} Models
-                  </span>
+          {/* Featured Home Inventory Section (Limited to 3 Models) */}
+          <section id="inventory" className="w-full px-6 lg:px-[120px] py-16">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 font-manrope gap-4">
+              <div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7b39fc]/20 text-[#a484d7] border border-[#7b39fc]/30 text-xs font-bold uppercase tracking-wider mb-2 font-cabin">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Featured Dealership Collection
+                </span>
+                <h3 className="text-3xl font-extrabold text-white tracking-tight">
+                  Handpicked Luxury Motors
                 </h3>
-                <p className="text-xs text-white/50 hidden sm:block font-inter">
-                  Showing {visibleVehicles.length} of {filteredVehicles.length} vehicles
+              </div>
+
+              <button
+                onClick={navigateToFullInventoryPage}
+                className="flex items-center gap-2 text-[#a484d7] hover:text-white font-cabin font-bold text-sm bg-[#2b2344]/80 hover:bg-[#7b39fc] px-5 py-2.5 rounded-[10px] border border-[#a484d7]/30 transition-all shadow-md"
+              >
+                <span>View Full Inventory Page ({filteredVehicles.length} Motors)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3].map((n) => (
+                  <div key={n} className="glass-card h-80 rounded-2xl animate-pulse bg-[#19142d]/60" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredHomeVehicles.map((vehicle) => (
+                  <VehicleCard
+                    key={vehicle.id}
+                    vehicle={vehicle}
+                    user={user}
+                    onSelectPurchase={(v) => setSelectedPurchaseVehicle(v)}
+                    onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
+                    onDelete={(id) => handleDeleteVehicle(id)}
+                    onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Load More Button -> Navigates to Dedicated Full Inventory Page */}
+            <div className="flex flex-col items-center justify-center mt-12 space-y-3 font-manrope">
+              <button
+                onClick={navigateToFullInventoryPage}
+                className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-semibold text-[16px] rounded-[10px] px-9 py-4 transition-all shadow-xl hover:shadow-purple-500/30 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2.5"
+              >
+                <span>Load More Vehicles ({filteredVehicles.length - 3} remaining)</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <p className="text-xs text-white/50 font-inter">
+                Showing 3 featured models. Click above to open the dedicated full inventory page.
+              </p>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {/* VIEW 2: DEDICATED FULL INVENTORY PAGE */}
+      {activeTab === 'inventory' && (
+        <main className="relative flex-1 w-full px-6 lg:px-[120px] py-10 overflow-hidden min-h-screen">
+          {/* Background Video specifically for Inventory Section */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover opacity-75 min-h-full"
+            >
+              <source
+                src="https://assets.mixkit.co/videos/74/74-720.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <div className="absolute inset-0 bg-[#0b0914]/50 backdrop-blur-[1px]" />
+          </div>
+
+          {/* Content Container (z-10) */}
+          <div className="relative z-10 w-full space-y-8">
+            
+            {/* Dedicated Page Header & Breadcrumb */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-manrope border-b border-[#a484d7]/20 pb-6">
+              <div>
+                <button
+                  onClick={() => setActiveTab('catalog')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#a484d7] hover:text-white mb-2 font-cabin transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Home</span>
+                </button>
+                <h2 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+                  Full Dealership Fleet Inventory
+                </h2>
+                <p className="text-xs text-white/60 font-inter mt-1">
+                  Explore certified vehicles, filter by category & price range, or place atomic purchase orders.
                 </p>
               </div>
 
-              {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <div key={n} className="glass-card h-80 rounded-2xl animate-pulse bg-[#19142d]/60" />
-                  ))}
-                </div>
-              ) : filteredVehicles.length === 0 ? (
-                <div className="glass-panel p-12 text-center rounded-2xl border border-[#a484d7]/20 bg-[#1c1634]/60">
-                  <Car className="w-12 h-12 text-white/40 mx-auto mb-3" />
-                  <h4 className="text-base font-bold text-white font-manrope">No vehicles match your search criteria</h4>
-                  <p className="text-xs text-white/60 mt-1 font-inter">Try resetting filters or adjusting your price slider.</p>
-                  <button
-                    onClick={resetFilters}
-                    className="mt-4 px-5 py-2.5 bg-[#7b39fc] hover:bg-[#6826e3] text-white text-xs font-bold font-cabin rounded-[10px] transition-colors"
-                  >
-                    Reset All Filters
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {visibleVehicles.map((vehicle) => (
-                      <VehicleCard
-                        key={vehicle.id}
-                        vehicle={vehicle}
-                        user={user}
-                        onSelectPurchase={(v) => setSelectedPurchaseVehicle(v)}
-                        onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
-                        onDelete={(id) => handleDeleteVehicle(id)}
-                        onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Pagination / Load More Bar */}
-                  {hasMoreVehicles && (
-                    <div className="flex flex-col items-center justify-center mt-12 space-y-3 font-manrope">
-                      <button
-                        onClick={() => setDisplayLimit((prev) => prev + ITEMS_PER_PAGE)}
-                        className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-semibold text-[15px] rounded-[10px] px-8 py-3.5 transition-all shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        Load More Vehicles ({filteredVehicles.length - displayLimit} remaining)
-                      </button>
-                      <p className="text-xs text-white/50 font-inter">
-                        Displaying {visibleVehicles.length} of {filteredVehicles.length} available models
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold px-4 py-2 rounded-full bg-[#2b2344] text-[#a484d7] border border-[#a484d7]/30 font-cabin">
+                  {filteredVehicles.length} Total Vehicles Available
+                </span>
+              </div>
             </div>
-          ) : (
-            /* Admin Panel Inventory Table View */
-            <div className="glass-panel p-6 rounded-[20px] border border-[#a484d7]/20 bg-[#1c1634]/70 font-manrope">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-xl font-extrabold text-white flex items-center gap-2 tracking-tight">
-                    <ShieldCheck className="w-5 h-5 text-[#a484d7]" />
-                    Admin Inventory Management Dashboard
-                  </h3>
-                  <p className="text-xs text-white/60 font-inter">Add, update, restock, or remove dealership inventory items.</p>
-                </div>
 
+            {/* Inventory Statistics Bar */}
+            <StatsBar vehicles={vehicles} />
+
+            {/* Filter and Search Controls */}
+            <FilterBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              maxPrice={maxPrice}
+              setMaxPrice={setMaxPrice}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              onReset={resetFilters}
+            />
+
+            {/* Vehicles Catalog Grid */}
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <div key={n} className="glass-card h-80 rounded-2xl animate-pulse bg-[#19142d]/60" />
+                ))}
+              </div>
+            ) : filteredVehicles.length === 0 ? (
+              <div className="glass-panel p-12 text-center rounded-2xl border border-[#a484d7]/20 bg-[#1c1634]/60">
+                <Car className="w-12 h-12 text-white/40 mx-auto mb-3" />
+                <h4 className="text-base font-bold text-white font-manrope">No vehicles match your search criteria</h4>
+                <p className="text-xs text-white/60 mt-1 font-inter">Try resetting filters or adjusting your price slider.</p>
                 <button
-                  onClick={() => setAdminModalState({ isOpen: true, mode: 'ADD', vehicle: null })}
-                  className="flex items-center gap-2 bg-[#7b39fc] hover:bg-[#6826e3] text-white text-xs font-semibold px-4 py-2.5 rounded-[10px] shadow-md transition-all font-cabin"
+                  onClick={resetFilters}
+                  className="mt-4 px-5 py-2.5 bg-[#7b39fc] hover:bg-[#6826e3] text-white text-xs font-bold font-cabin rounded-[10px] transition-colors"
                 >
-                  <PlusCircle className="w-4 h-4" />
-                  Add New Vehicle
+                  Reset All Filters
                 </button>
               </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {visibleInventoryVehicles.map((vehicle) => (
+                    <VehicleCard
+                      key={vehicle.id}
+                      vehicle={vehicle}
+                      user={user}
+                      onSelectPurchase={(v) => setSelectedPurchaseVehicle(v)}
+                      onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
+                      onDelete={(id) => handleDeleteVehicle(id)}
+                      onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
+                    />
+                  ))}
+                </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-[#130e26] text-white/60 uppercase text-[10px] tracking-wider border-b border-[#a484d7]/20 font-cabin">
-                    <tr>
-                      <th className="p-3.5">Vehicle</th>
-                      <th className="p-3.5">VIN</th>
-                      <th className="p-3.5">Category</th>
-                      <th className="p-3.5">Price</th>
-                      <th className="p-3.5">Stock Quantity</th>
-                      <th className="p-3.5 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#a484d7]/15">
-                    {vehicles.map((v) => (
-                      <tr key={v.id} className="hover:bg-[#2b2344]/40 transition-colors">
-                        <td className="p-3.5 font-bold text-white flex items-center gap-3">
-                          <img
-                            src={v.imageUrl || 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd'}
-                            alt={v.model}
-                            className="w-10 h-8 object-cover rounded-md"
-                          />
-                          {v.make} {v.model}
-                        </td>
-                        <td className="p-3.5 font-mono text-white/60">{v.vin}</td>
-                        <td className="p-3.5">
-                          <span className="px-2.5 py-1 rounded-[6px] bg-[#2b2344] font-semibold text-[#a484d7] border border-[#a484d7]/30">
-                            {v.category}
-                          </span>
-                        </td>
-                        <td className="p-3.5 font-semibold text-white">${v.price.toLocaleString()}</td>
-                        <td className="p-3.5">
-                          {v.quantity === 0 ? (
-                            <span className="px-2.5 py-1 rounded-[6px] bg-rose-500/20 text-rose-400 font-bold border border-rose-500/40">
-                              0 (OUT OF STOCK)
-                            </span>
-                          ) : (
-                            <span className="px-2.5 py-1 rounded-[6px] bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
-                              {v.quantity} Units
-                            </span>
-                          )}
-                        </td>
-                        <td className="p-3.5 text-right space-x-2 font-cabin">
-                          <button
-                            onClick={() => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
-                            className="px-2.5 py-1 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900 border border-emerald-800 rounded-[6px] font-semibold"
-                          >
-                            + Restock
-                          </button>
-                          <button
-                            onClick={() => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
-                            className="px-2.5 py-1 bg-[#7b39fc]/20 text-[#a484d7] hover:bg-[#7b39fc]/40 border border-[#7b39fc]/40 rounded-[6px] font-semibold"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteVehicle(v.id)}
-                            className="px-2.5 py-1 bg-rose-950/60 text-rose-300 hover:bg-rose-900 border border-rose-800 rounded-[6px] font-semibold"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {/* Pagination Controls inside Dedicated Inventory Page */}
+                {hasMoreInventoryVehicles && (
+                  <div className="flex flex-col items-center justify-center mt-12 space-y-3 font-manrope">
+                    <button
+                      onClick={() => setDisplayLimit((prev) => prev + ITEMS_PER_PAGE)}
+                      className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-semibold text-[15px] rounded-[10px] px-8 py-3.5 transition-all shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      Load More Vehicles ({filteredVehicles.length - displayLimit} remaining)
+                    </button>
+                    <p className="text-xs text-white/50 font-inter">
+                      Displaying {visibleInventoryVehicles.length} of {filteredVehicles.length} available models
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </main>
+      )}
+
+      {/* VIEW 3: ADMIN MANAGEMENT DASHBOARD */}
+      {activeTab === 'admin' && (
+        <main className="flex-1 w-full px-6 lg:px-[120px] py-10 min-h-screen">
+          <div className="glass-panel p-6 rounded-[20px] border border-[#a484d7]/20 bg-[#1c1634]/70 font-manrope">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <button
+                  onClick={() => setActiveTab('catalog')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#a484d7] hover:text-white mb-2 font-cabin transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Home</span>
+                </button>
+                <h3 className="text-xl font-extrabold text-white flex items-center gap-2 tracking-tight">
+                  <ShieldCheck className="w-5 h-5 text-[#a484d7]" />
+                  Admin Inventory Management Dashboard
+                </h3>
+                <p className="text-xs text-white/60 font-inter">Add, update, restock, or remove dealership inventory items.</p>
               </div>
+
+              <button
+                onClick={() => setAdminModalState({ isOpen: true, mode: 'ADD', vehicle: null })}
+                className="flex items-center gap-2 bg-[#7b39fc] hover:bg-[#6826e3] text-white text-xs font-semibold px-4 py-2.5 rounded-[10px] shadow-md transition-all font-cabin"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Add New Vehicle
+              </button>
             </div>
-          )}
-        </div>
-      </main>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-300">
+                <thead className="bg-[#130e26] text-white/60 uppercase text-[10px] tracking-wider border-b border-[#a484d7]/20 font-cabin">
+                  <tr>
+                    <th className="p-3.5">Vehicle</th>
+                    <th className="p-3.5">VIN</th>
+                    <th className="p-3.5">Category</th>
+                    <th className="p-3.5">Price</th>
+                    <th className="p-3.5">Stock Quantity</th>
+                    <th className="p-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#a484d7]/15">
+                  {vehicles.map((v) => (
+                    <tr key={v.id} className="hover:bg-[#2b2344]/40 transition-colors">
+                      <td className="p-3.5 font-bold text-white flex items-center gap-3">
+                        <img
+                          src={v.imageUrl || 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd'}
+                          alt={v.model}
+                          className="w-10 h-8 object-cover rounded-md"
+                        />
+                        {v.make} {v.model}
+                      </td>
+                      <td className="p-3.5 font-mono text-white/60">{v.vin}</td>
+                      <td className="p-3.5">
+                        <span className="px-2.5 py-1 rounded-[6px] bg-[#2b2344] font-semibold text-[#a484d7] border border-[#a484d7]/30">
+                          {v.category}
+                        </span>
+                      </td>
+                      <td className="p-3.5 font-semibold text-white">${v.price.toLocaleString()}</td>
+                      <td className="p-3.5">
+                        {v.quantity === 0 ? (
+                          <span className="px-2.5 py-1 rounded-[6px] bg-rose-500/20 text-rose-400 font-bold border border-rose-500/40">
+                            0 (OUT OF STOCK)
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-[6px] bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+                            {v.quantity} Units
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-3.5 text-right space-x-2 font-cabin">
+                        <button
+                          onClick={() => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
+                          className="px-2.5 py-1 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900 border border-emerald-800 rounded-[6px] font-semibold"
+                        >
+                          + Restock
+                        </button>
+                        <button
+                          onClick={() => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
+                          className="px-2.5 py-1 bg-[#7b39fc]/20 text-[#a484d7] hover:bg-[#7b39fc]/40 border border-[#7b39fc]/40 rounded-[6px] font-semibold"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteVehicle(v.id)}
+                          className="px-2.5 py-1 bg-rose-950/60 text-rose-300 hover:bg-rose-900 border border-rose-800 rounded-[6px] font-semibold"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      )}
 
       {/* Professional & Useful Footer */}
       <Footer onNotify={showNotification} />
