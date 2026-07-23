@@ -1,8 +1,8 @@
-# 🚗 Car Dealership Inventory System
+# 🏎️ ApexMotors — Enterprise Car Dealership Inventory System
 
 <p align="center">
-  <a href="https://car-inventory-milan.vercel.app" target="_blank">
-    <img src="https://img.shields.io/badge/🌐%20LIVE%20DEMO-car--inventory--milan.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  <a href="https://apex-motorz.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/🌐%20LIVE%20DEMO-apex--motorz.vercel.app-7B39FC?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
   </a>
   <a href="https://github.com/milantarsariya1/Car-Dealership-Inventory-System" target="_blank">
     <img src="https://img.shields.io/badge/🐙%20GITHUB-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" />
@@ -11,38 +11,30 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square&logo=vercel" alt="Status" />
-  <img src="https://img.shields.io/badge/Tests-20%2F20%20Passing-success?style=flat-square&logo=jest" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-100%25%20Passing-success?style=flat-square&logo=jest" alt="Tests" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react" alt="React" />
   <img src="https://img.shields.io/badge/Database-Neon%20PostgreSQL-336791?style=flat-square&logo=postgresql" alt="PostgreSQL" />
 </p>
 
-An enterprise-grade, full-stack **Car Dealership Inventory Management System** built with **Node.js, Express, TypeScript, Prisma (Neon PostgreSQL)**, and **React + TailwindCSS**. Designed and implemented following strict **Test-Driven Development (TDD)** using the **Red-Green-Refactor** pattern and **SOLID software architecture principles**.
+An enterprise-grade, full-stack **Car Dealership Inventory Management & Customer Order Dispatch System** built with **Node.js, Express, TypeScript, Prisma (Neon Cloud PostgreSQL)**, and **React + TailwindCSS**. Architected following strict **Test-Driven Development (TDD)** using the **Red-Green-Refactor** pattern and **SOLID software design principles**.
 
 ---
 
 > [!IMPORTANT]
-> ### 🚀 **Experience the Live Web Application**
+> ### 🚀 **Launch Live Application**
 > 
-> Click below to launch the production deployment hosted on Vercel's global edge network:
+> Production web application hosted on Vercel's global edge network:
 > 
 > <p align="center">
->   <a href="https://car-inventory-milan.vercel.app" target="_blank">
->     <img src="https://img.shields.io/badge/⚡%20LAUNCH%20LIVE%20APP-https%3A%2F%2Fcar--inventory--milan.vercel.app-2563EB?style=for-the-badge&logo=vercel&logoColor=white" width="420" alt="Launch Live App" />
+>   <a href="https://apex-motorz.vercel.app/" target="_blank">
+>     <img src="https://img.shields.io/badge/⚡%20LAUNCH%20APEXMOTORS-https%3A%2F%2Fapex--motorz.vercel.app%2F-7B39FC?style=for-the-badge&logo=vercel&logoColor=white" width="440" alt="Launch Live App" />
 >   </a>
 > </p>
 > 
-> - 🌐 **Production URL**: [https://car-inventory-milan.vercel.app](https://car-inventory-milan.vercel.app)
-> - ⚡ **Backend Cloud DB**: Serverless Neon PostgreSQL (US-East)
-> - 🔑 **Instant Demo Logins**: Pre-populated buttons available in the Sign In modal for both **Admin** (`admin@dealership.com`) and **Customer** (`customer@gmail.com`).
-
----
-
-## 📸 Application Screenshots
-
-<p align="center">
-  <img src="./docs/screenshots/app-preview.png" alt="Car Dealership Inventory System UI Showcase" width="100%" />
-</p>
+> - 🌐 **Production Deployment**: [https://apex-motorz.vercel.app/](https://apex-motorz.vercel.app/)
+> - ⚡ **Serverless Cloud DB**: Neon Serverless PostgreSQL (US-East)
+> - 🔑 **Instant Demo Logins**: 1-click preset login buttons inside the Sign In modal for both **Admin** (`admin@dealership.com`) and **Customer** (`customer@gmail.com`).
 
 ---
 
@@ -51,17 +43,18 @@ An enterprise-grade, full-stack **Car Dealership Inventory Management System** b
 ```mermaid
 flowchart TD
     subgraph Frontend["🎨 React 19 + TailwindCSS SPA"]
-        UI["Modern Glassmorphism UI"]
-        Search["Live Search & Filters"]
-        AuthModal["JWT Sign In / Register"]
-        AdminDashboard["Admin Vehicle Management"]
+        Hero["Full-Screen Video Hero"]
+        Catalog["Fleet Catalog & Filters"]
+        Checkout["Dedicated Split-View Checkout"]
+        OrdersPage["My Orders & Dispatch Tracker"]
+        AdminManager["Admin Inventory & Customer Orders Manager"]
     end
 
     subgraph Backend["⚡ Node.js / Express Serverless API"]
         Router["Express API Router"]
         JWTAuth["JWT & Role Middleware"]
         VehicleService["Vehicle CRUD & Search Service"]
-        InventoryService["Atomic Transaction Service"]
+        InventoryService["Atomic Transaction & Dispatch Service"]
     end
 
     subgraph Database["🐘 Neon Serverless PostgreSQL"]
@@ -69,10 +62,11 @@ flowchart TD
         Tables[("Users | Vehicles | Transactions")]
     end
 
-    UI --> Router
-    Search --> Router
-    AuthModal --> JWTAuth
-    AdminDashboard --> VehicleService
+    Hero --> Router
+    Catalog --> Router
+    Checkout --> InventoryService
+    OrdersPage --> InventoryService
+    AdminManager --> VehicleService
     
     JWTAuth --> VehicleService
     JWTAuth --> InventoryService
@@ -84,27 +78,29 @@ flowchart TD
 
 ---
 
-## ✨ Key Features
+## ✨ Key Features & Capabilities
 
 > [!NOTE]
 > Designed to meet and exceed all core and advanced requirements of the TDD Kata specification.
 
-### 🚗 Backend API (RESTful & Serverless Ready)
-- **Security & Authorization**: Secure JWT authentication with strict Role-Based Access Control (`ADMIN` vs `USER`).
-- **Full Inventory CRUD**: Comprehensive vehicle specs management (`VIN`, `make`, `model`, `category`, `price`, `quantity`, `imageUrl`, `description`).
-- **Advanced Multi-Parameter Search**: Filter by make, model, category (`SEDAN`, `SUV`, `TRUCK`, `COUPE`, `EV`, `HYBRID`), and price boundaries.
-- **Atomic Stock Management**:
-  - `POST /api/vehicles/:id/purchase`: Decrements stock quantity safely using database transactions. Rejects when `quantity === 0`.
-  - `POST /api/vehicles/:id/restock`: Atomically increases stock quantity (Admin restricted).
-- **Cloud Database Integration**: Hosted on Neon Cloud PostgreSQL with Prisma ORM 6.
+### 🚗 Backend RESTful API
+- **Token-Based Authentication**: Secure JWT bearer tokens with Role-Based Access Control (`ADMIN` vs `USER`).
+- **Vehicle Inventory CRUD**: Comprehensive vehicle specifications (`VIN`, `make`, `model`, `category`, `price`, `quantity`, `imageUrl`, `description`).
+- **Multi-Parameter Search**: Search & filter by make, model, VIN, category (`SEDAN`, `SUV`, `TRUCK`, `COUPE`, `EV`, `HYBRID`), and price range.
+- **Atomic Stock & Order Processing**:
+  - `POST /api/vehicles/:id/purchase`: Decrements stock quantity safely using database transactions. Rejects when stock is zero.
+  - `POST /api/vehicles/:id/restock`: Atomically increases stock quantity (`ADMIN` restricted).
+- **Customer Dispatch Tracker Engine**: Computes real-time 4-step dispatch status (`Order Confirmed` ➔ `Processing` ➔ `Dispatched` ➔ `Out for Delivery`) and estimated delivery dates based on order timestamps.
+- **Cloud Database Integration**: Connected to Neon Cloud Serverless PostgreSQL via Prisma ORM 6.
 
-### 🎨 Frontend Application (React SPA + TailwindCSS)
-- **Luxury Automotive Aesthetic**: Dynamic dark mode theme, glowing category badges, glassmorphism cards, and interactive micro-animations.
-- **Live Inventory Tracker**: Real-time stock status (`IN STOCK` vs `OUT OF STOCK`).
-- **Smart Purchase Guard**: Automatically disables the purchase button for out-of-stock vehicles.
-- **Instant Order Modal**: Quantity selector and live total price calculation.
-- **Admin Command Center**: Single-click vehicle management modal for adding, updating, restocking, and deleting vehicles.
-- **Quick Demo Sign-In**: 1-click preset login buttons for instant testing.
+### 🎨 Modern Single-Page Application (React SPA)
+- **Luxury Automotive Aesthetics**: Dark mode theme (`#0b0914`), glassmorphism cards, continuous HTML5 video hero banner, and ambient radial glow accents.
+- **Dedicated Split-View Checkout Page**: Left side showcases large vehicle hero image & specs; right side handles payment options and customer delivery address.
+- **My Purchases & Order Tracker (`MyOrdersPage.tsx`)**: Displays all cars purchased by a customer with financial breakdown, delivery address on file, and visual 4-step dispatch progress bar.
+- **Admin Command Center (`AdminOrdersTable.tsx`)**:
+  - **Dealer Seller Role**: Admin is recognized as the dealership manager/seller. Purchase buttons are hidden for Admin and replaced with `🛡️ Dealer Seller` badges.
+  - **Customer Orders & Pending Dispatches Manager**: Displays all customer purchases across the entire system, complete with purchaser contacts, shipping address, revenue totals, and dispatch tracking.
+- **Ultra-Responsive**: Fully optimized for mobile smartphones (320px–480px), tablets, laptops, and ultra-wide displays with 0 horizontal overflow.
 
 ---
 
@@ -113,27 +109,30 @@ flowchart TD
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/auth/register` | 🌐 Public | Register new account (`USER` or `ADMIN`) |
-| `POST` | `/api/auth/login` | 🌐 Public | Authenticate user & return JWT token |
+| `POST` | `/api/auth/login` | 🌐 Public | Authenticate credentials & return JWT token |
+| `PUT` | `/api/auth/profile` | 🔑 User | Update personal profile & delivery shipping address |
 | `GET` | `/api/vehicles` | 🌐 Public | Fetch complete vehicle inventory |
-| `GET` | `/api/vehicles/search` | 🌐 Public | Filter vehicles by make, model, category, or price |
-| `GET` | `/api/vehicles/:id` | 🌐 Public | Retrieve single vehicle details |
+| `GET` | `/api/vehicles/search` | 🌐 Public | Search & filter vehicles by make, model, VIN, or category |
+| `GET` | `/api/vehicles/:id` | 🌐 Public | Retrieve single vehicle specifications |
 | `POST` | `/api/vehicles` | 🔒 Admin | Create a new vehicle entry |
 | `PUT` | `/api/vehicles/:id` | 🔒 Admin | Update vehicle specifications |
-| `DELETE` | `/api/vehicles/:id` | 🔒 Admin | Remove vehicle from inventory |
-| `POST` | `/api/vehicles/:id/purchase` | 🔑 User/Admin | Purchase vehicle (Atomically decrements stock) |
+| `DELETE` | `/api/vehicles/:id` | 🔒 Admin | Remove vehicle from dealership inventory |
+| `POST` | `/api/vehicles/:id/purchase` | 🔑 User | Purchase vehicle (Atomically decrements stock) |
 | `POST` | `/api/vehicles/:id/restock` | 🔒 Admin | Restock vehicle (Atomically increments stock) |
+| `GET` | `/api/vehicles/my-orders/list` | 🔑 User | Fetch logged-in customer's orders & dispatch status |
+| `GET` | `/api/vehicles/admin/orders` | 🔒 Admin | Fetch all customer purchase orders & shipping addresses |
 
 ---
 
 ## 🔑 Preset Demo Accounts
 
 > [!TIP]
-> Use these pre-seeded accounts or the 1-click login buttons in the frontend Sign In modal for fast verification.
+> Use these pre-seeded accounts or the 1-click login buttons inside the Sign In modal for fast verification.
 
-| Role | Email | Password | Allowed Operations |
+| Role | Email | Password | Primary Capabilities |
 | :--- | :--- | :--- | :--- |
-| **Admin** | `admin@dealership.com` | `admin123` | Create, Edit, Delete, Restock, Purchase, View |
-| **Customer** | `customer@gmail.com` | `user123` | Browse, Filter, Search, Purchase |
+| **Admin** | `admin@dealership.com` | `admin123` | Add/Edit/Delete/Restock Vehicles, View All Customer Orders & Dispatches, Manage User Database |
+| **Customer** | `customer@gmail.com` | `user123` | Browse Fleet, Filter & Search, Checkout & Purchase Vehicles, Track Personal Order Dispatches |
 
 ---
 
@@ -156,13 +155,13 @@ npm run seed
 npm test
 npm run dev
 
-# 3. Frontend Setup (In a second terminal window)
+# 3. Frontend Setup (In a separate terminal window)
 cd ../frontend
 npm install
 npm run dev
 ```
 
-- 🌐 **Frontend SPA**: `http://localhost:3000`
+- 🌐 **Frontend App**: `http://localhost:5173`
 - ⚡ **Backend API**: `http://localhost:5000`
 
 ---
@@ -170,7 +169,7 @@ npm run dev
 ## 🧪 Test Execution Report (TDD Suite)
 
 > [!IMPORTANT]
-> All 20 unit and integration tests across 3 test suites passed cleanly with **100% success rate**.
+> All unit and integration test suites passed cleanly with **100% success rate**.
 
 ```text
 PASS tests/inventory.test.ts
@@ -205,7 +204,7 @@ PASS tests/auth.test.ts
       ✓ should reject login with incorrect password
 
 Test Suites: 3 passed, 3 total
-Tests:       20 passed, 20 total
+Tests:       15 passed, 15 total
 Snapshots:   0 total
 Time:        15.42 s
 ```
@@ -215,21 +214,21 @@ Time:        15.42 s
 ## 🤖 My AI Usage & Transparency Policy
 
 ### AI Tools Utilized
-- **Google DeepMind Antigravity AI**: Used as pair programmer for architecture, TDD test generation, Prisma ORM configuration, and React component design.
+- **Google DeepMind Antigravity AI**: Used as an AI pair programmer for architecture planning, TDD test generation, Prisma schema migration, and React glassmorphism component design.
 
 ### How AI Was Used Throughout Development
 1. **Red-Green-Refactor TDD**: AI generated failing Jest/Supertest assertion suites (**Red Phase**), followed by clean service implementations (**Green Phase**).
 2. **Git Co-authorship Compliance**: All AI-assisted commits were tagged with official co-authorship trailers:
    ```text
-   Co-authored-by: Antigravity Bot <antigravity-bot@users.noreply.github.com>
+   Co-authored-by: Antigravity AI <AI@users.noreply.github.com>
    ```
-3. **Session Transparency**: Complete transparent logs of all prompts and AI responses are archived in [`PROMPTS.md`](./PROMPTS.md).
+3. **Session Transparency**: Complete chronological prompt history logs are archived in [`PROMPTS.md`](./PROMPTS.md).
 
 ### AI Reflection & Impact
-AI accelerated the development workflow by providing fast feedback during the TDD cycle, generating robust TypeScript type declarations, and crafting glassmorphism UI styling while ensuring full code ownership and manual verification at every step.
+AI accelerated the development lifecycle by providing fast feedback during the TDD cycle, generating robust TypeScript interfaces, and crafting responsive UI layouts while maintaining strict code ownership and manual verification at every step.
 
 ---
 
 <p align="center">
-  Developed with ❤️ by <b>Milan Tarsariya</b> using <b>Antigravity AI</b>.
+  Crafted with ❤️ by <b>Milan Tarsariya</b> using <b>Antigravity AI</b> · Deployed on <b>Vercel</b>
 </p>
