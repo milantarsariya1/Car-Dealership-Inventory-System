@@ -539,7 +539,7 @@ export function App() {
                           {v.category}
                         </span>
                       </td>
-                      <td className="p-3.5 font-semibold text-white">${v.price.toLocaleString()}</td>
+                      <td className="p-3.5 font-semibold text-white">₹{v.price.toLocaleString('en-IN')}</td>
                       <td className="p-3.5">
                         {v.quantity === 0 ? (
                           <span className="px-2.5 py-1 rounded-[6px] bg-rose-500/20 text-rose-400 font-bold border border-rose-500/40">

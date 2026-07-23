@@ -179,7 +179,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
 
               <div className="grid grid-cols-2 gap-4 font-cabin">
                 <div>
-                  <label className="text-xs font-semibold text-white/80 block mb-1">Price ($)*</label>
+                  <label className="text-xs font-semibold text-white/80 block mb-1">Price (₹)*</label>
                   <input
                     type="number"
                     min="0"

@@ -87,7 +87,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="bg-[#2b2344]/50 p-3.5 rounded-[12px] border border-[#a484d7]/20">
               <span className="text-xs text-white/50 block font-cabin">Unit Price</span>
-              <span className="text-lg font-bold text-white">${vehicle.price.toLocaleString()}</span>
+              <span className="text-lg font-bold text-white">₹{vehicle.price.toLocaleString('en-IN')}</span>
             </div>
             <div className="bg-[#2b2344]/50 p-3.5 rounded-[12px] border border-[#a484d7]/20">
               <span className="text-xs text-white/50 block font-cabin">Stock Available</span>
@@ -121,16 +121,16 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
           <div className="bg-[#130e26] p-4 rounded-[14px] border border-[#a484d7]/20 space-y-2">
             <div className="flex justify-between text-xs text-white/60">
               <span>Subtotal ({quantity} vehicle):</span>
-              <span>${(vehicle.price * quantity).toLocaleString()}</span>
+              <span>₹{(vehicle.price * quantity).toLocaleString('en-IN')}</span>
             </div>
             <div className="flex justify-between text-xs text-white/60">
               <span>Dealership Processing Fee:</span>
-              <span className="text-emerald-400 font-semibold">$0 (Waived)</span>
+              <span className="text-emerald-400 font-semibold">₹0 (Waived)</span>
             </div>
             <div className="pt-2 border-t border-[#a484d7]/20 flex justify-between items-baseline">
               <span className="text-sm font-bold text-white">Total Order Value:</span>
               <span className="text-2xl font-extrabold text-[#a484d7]">
-                ${totalPrice.toLocaleString()}
+                ₹{totalPrice.toLocaleString('en-IN')}
               </span>
             </div>
           </div>
@@ -169,7 +169,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
               disabled={isSubmitting || vehicle.quantity < 1}
               className="w-2/3 py-3 rounded-[10px] text-xs font-semibold text-white bg-[#7b39fc] hover:bg-[#6826e3] shadow-lg shadow-purple-500/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
             >
-              {isSubmitting ? 'Processing Purchase...' : `Confirm Purchase ($${totalPrice.toLocaleString()})`}
+              {isSubmitting ? 'Processing Purchase...' : `Confirm Purchase (₹${totalPrice.toLocaleString('en-IN')})`}
             </button>
           </div>
         </div>

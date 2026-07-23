@@ -1,6 +1,6 @@
 import React from 'react';
 import { Vehicle } from '../types';
-import { Package, CheckCircle2, AlertTriangle, DollarSign } from 'lucide-react';
+import { Package, CheckCircle2, AlertTriangle, IndianRupee } from 'lucide-react';
 
 interface StatsBarProps {
   vehicles: Vehicle[];
@@ -46,12 +46,12 @@ export const StatsBar: React.FC<StatsBarProps> = ({ vehicles }) => {
 
       <div className="glass-card p-4 rounded-[14px] flex items-center space-x-3.5 border-l-4 border-l-[#a484d7] bg-[#1a142e]/60">
         <div className="p-2.5 rounded-[10px] bg-[#7b39fc]/20 text-[#a484d7]">
-          <DollarSign className="w-5 h-5" />
+          <IndianRupee className="w-5 h-5" />
         </div>
         <div>
           <p className="text-xs text-white/60 font-medium font-cabin">Total Inventory Value</p>
           <p className="text-2xl font-bold text-[#a484d7] font-manrope">
-            ${totalInventoryValue.toLocaleString()}
+            ₹{totalInventoryValue.toLocaleString('en-IN')}
           </p>
         </div>
       </div>

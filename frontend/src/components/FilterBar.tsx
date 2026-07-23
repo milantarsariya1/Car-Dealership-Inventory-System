@@ -106,7 +106,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             className="w-full sm:w-64 accent-[#7b39fc] cursor-pointer"
           />
           <span className="text-xs font-bold text-[#a484d7] min-w-[80px]">
-            ${maxPrice.toLocaleString()}
+            ₹{maxPrice.toLocaleString('en-IN')}
           </span>
         </div>
         <p className="text-xs text-white/40 hidden md:block">

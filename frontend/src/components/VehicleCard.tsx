@@ -98,7 +98,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
               Price
             </span>
             <span className="text-2xl font-bold text-white font-manrope">
-              ${vehicle.price.toLocaleString()}
+              ₹{vehicle.price.toLocaleString('en-IN')}
             </span>
           </div>
 
