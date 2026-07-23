@@ -3,6 +3,23 @@ import { AuthResponse, ApiResponse, Vehicle, User } from '../types';
 const API_BASE = '/api';
 
 export class ApiService {
+  /**
+   * Safely parses an API response. If the server returns a non-JSON body
+   * (e.g. an HTML error page from a crashed serverless function), we surface
+   * a consistent { success: false, error } shape instead of throwing a
+   * cryptic JSON parse error in the UI.
+   */
+  private static async parseResponse<T>(res: Response): Promise<T> {
+    try {
+      return (await res.json()) as T;
+    } catch {
+      return {
+        success: false,
+        error: `Request failed with status ${res.status} (${res.statusText || 'Unexpected server response'})`,
+      } as T;
+    }
+  }
+
   private static getHeaders(): HeadersInit {
     const token = localStorage.getItem('token');
     const headers: HeadersInit = {
@@ -21,7 +38,7 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async login(data: { email: string; password: string }): Promise<AuthResponse> {
@@ -30,14 +47,14 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async getAllUsers(): Promise<ApiResponse<User[]>> {
     const res = await fetch(`${API_BASE}/auth/users`, {
       headers: this.getHeaders(),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async updateProfile(data: {
@@ -56,7 +73,7 @@ export class ApiService {
       headers: this.getHeaders(),
       body: JSON.stringify(data),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async updateUserByAdmin(
@@ -78,7 +95,7 @@ export class ApiService {
       headers: this.getHeaders(),
       body: JSON.stringify(data),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   // Vehicles API
@@ -86,7 +103,7 @@ export class ApiService {
     const res = await fetch(`${API_BASE}/vehicles`, {
       headers: this.getHeaders(),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async searchVehicles(params: {
@@ -106,7 +123,7 @@ export class ApiService {
     const res = await fetch(`${API_BASE}/vehicles/search?${queryParams.toString()}`, {
       headers: this.getHeaders(),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async createVehicle(vehicleData: Partial<Vehicle>): Promise<ApiResponse<Vehicle>> {
@@ -115,7 +132,7 @@ export class ApiService {
       headers: this.getHeaders(),
       body: JSON.stringify(vehicleData),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async updateVehicle(id: string, vehicleData: Partial<Vehicle>): Promise<ApiResponse<Vehicle>> {
@@ -124,7 +141,7 @@ export class ApiService {
       headers: this.getHeaders(),
       body: JSON.stringify(vehicleData),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async deleteVehicle(id: string): Promise<ApiResponse<void>> {
@@ -132,7 +149,7 @@ export class ApiService {
       method: 'DELETE',
       headers: this.getHeaders(),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   // Inventory API (Purchase & Restock)
@@ -142,7 +159,7 @@ export class ApiService {
       headers: this.getHeaders(),
       body: JSON.stringify({ quantity }),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async restockVehicle(id: string, quantity: number): Promise<ApiResponse<{ vehicle: Vehicle; transaction: any }>> {
@@ -151,21 +168,21 @@ export class ApiService {
       headers: this.getHeaders(),
       body: JSON.stringify({ quantity }),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async getMyOrders(): Promise<ApiResponse<any[]>> {
     const res = await fetch(`${API_BASE}/vehicles/my-orders/list`, {
       headers: this.getHeaders(),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 
   static async getAllOrdersForAdmin(): Promise<ApiResponse<any[]>> {
     const res = await fetch(`${API_BASE}/vehicles/admin/orders`, {
       headers: this.getHeaders(),
     });
-    return res.json();
+    return this.parseResponse(res);
   }
 }
 
