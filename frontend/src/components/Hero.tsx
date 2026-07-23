@@ -17,7 +17,7 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
         className="absolute inset-0 w-full h-full object-cover min-h-screen z-0"
       >
         <source
-          src="https://assets.mixkit.co/videos/74/74-720.mp4"
+          src="https://assets.mixkit.co/videos/63/63-720.mp4"
           type="video/mp4"
         />
         <source

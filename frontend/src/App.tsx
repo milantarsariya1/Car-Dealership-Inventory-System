@@ -6,10 +6,13 @@ import { Hero } from './components/Hero';
 import { StatsBar } from './components/StatsBar';
 import { FilterBar } from './components/FilterBar';
 import { VehicleCard } from './components/VehicleCard';
+import { Footer } from './components/Footer';
 import { PurchaseModal } from './components/PurchaseModal';
 import { AdminModal } from './components/AdminModal';
 import { AuthModal } from './components/AuthModal';
 import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle } from 'lucide-react';
+
+const ITEMS_PER_PAGE = 6;
 
 export function App() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -22,6 +25,9 @@ export function App() {
   const [maxPrice, setMaxPrice] = useState<number>(150000);
   const [sortBy, setSortBy] = useState<string>('newest');
   const [activeTab, setActiveTab] = useState<'catalog' | 'admin'>('catalog');
+
+  // Pagination State
+  const [displayLimit, setDisplayLimit] = useState<number>(ITEMS_PER_PAGE);
 
   // Modals State
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
@@ -39,6 +45,11 @@ export function App() {
     setToast({ type, message });
     setTimeout(() => setToast(null), 4000);
   };
+
+  // Reset pagination when search query or category filter changes
+  useEffect(() => {
+    setDisplayLimit(ITEMS_PER_PAGE);
+  }, [searchQuery, selectedCategory, maxPrice, sortBy]);
 
   // Load Saved Auth Token & Initial Inventory Data
   useEffect(() => {
@@ -157,6 +168,10 @@ export function App() {
       return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
     });
 
+  // Paginated visible items
+  const visibleVehicles = filteredVehicles.slice(0, displayLimit);
+  const hasMoreVehicles = displayLimit < filteredVehicles.length;
+
   const resetFilters = () => {
     setSearchQuery('');
     setSelectedCategory('ALL');
@@ -243,6 +258,9 @@ export function App() {
                   {filteredVehicles.length} Models
                 </span>
               </h3>
+              <p className="text-xs text-white/50 hidden sm:block font-inter">
+                Showing {visibleVehicles.length} of {filteredVehicles.length} vehicles
+              </p>
             </div>
 
             {loading ? (
@@ -264,19 +282,36 @@ export function App() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredVehicles.map((vehicle) => (
-                  <VehicleCard
-                    key={vehicle.id}
-                    vehicle={vehicle}
-                    user={user}
-                    onSelectPurchase={(v) => setSelectedPurchaseVehicle(v)}
-                    onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
-                    onDelete={(id) => handleDeleteVehicle(id)}
-                    onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {visibleVehicles.map((vehicle) => (
+                    <VehicleCard
+                      key={vehicle.id}
+                      vehicle={vehicle}
+                      user={user}
+                      onSelectPurchase={(v) => setSelectedPurchaseVehicle(v)}
+                      onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
+                      onDelete={(id) => handleDeleteVehicle(id)}
+                      onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination / Load More Bar */}
+                {hasMoreVehicles && (
+                  <div className="flex flex-col items-center justify-center mt-12 space-y-3 font-manrope">
+                    <button
+                      onClick={() => setDisplayLimit((prev) => prev + ITEMS_PER_PAGE)}
+                      className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-semibold text-[15px] rounded-[10px] px-8 py-3.5 transition-all shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      Load More Vehicles ({filteredVehicles.length - displayLimit} remaining)
+                    </button>
+                    <p className="text-xs text-white/50 font-inter">
+                      Displaying {visibleVehicles.length} of {filteredVehicles.length} available models
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         ) : (
@@ -370,15 +405,8 @@ export function App() {
         )}
       </main>
 
-      {/* Footer - Full Scaled Width */}
-      <footer id="contact" className="w-full px-6 lg:px-[120px] py-10 bg-[#07050e] border-t border-[#a484d7]/15 text-xs text-white/50 font-manrope mt-16">
-        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© 2026 ApexMotors Car Dealership Inventory System. Full-Stack TDD Project.</p>
-          <p className="text-white/60">
-            Powered by <span className="text-[#7b39fc] font-semibold">Node.js, Express, Prisma, Neon PostgreSQL & React</span>
-          </p>
-        </div>
-      </footer>
+      {/* Professional & Useful Footer */}
+      <Footer onNotify={showNotification} />
 
       {/* Active Modals */}
       {showAuthModal && (
