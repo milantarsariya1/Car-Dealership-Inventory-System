@@ -30,7 +30,12 @@ describe('Vehicle Inventory Endpoints (/api/vehicles)', () => {
       name: 'Vehicle Admin',
       email: 'veh_admin@test.com',
       password: 'password123',
-      role: 'ADMIN',
+    });
+    
+    // Manually promote to ADMIN since API blocks it
+    await prisma.user.update({
+      where: { email: 'veh_admin@test.com' },
+      data: { role: 'ADMIN' },
     });
     const adminLoginRes = await request(app).post('/api/auth/login').send({
       email: 'veh_admin@test.com',

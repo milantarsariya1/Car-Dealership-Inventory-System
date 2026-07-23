@@ -29,7 +29,11 @@ describe('Inventory Transactions - Purchase & Restock', () => {
       name: 'Inv Admin',
       email: 'inv_admin@test.com',
       password: 'password123',
-      role: 'ADMIN',
+    });
+
+    await prisma.user.update({
+      where: { email: 'inv_admin@test.com' },
+      data: { role: 'ADMIN' },
     });
     const adminLoginRes = await request(app).post('/api/auth/login').send({
       email: 'inv_admin@test.com',

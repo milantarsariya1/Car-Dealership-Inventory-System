@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, Menu, X, LogOut, ShieldCheck, User as UserIcon, PlusCircle, LayoutDashboard, CarFront } from 'lucide-react';
+import { ChevronDown, Menu, X, LogOut, ShieldCheck, User as UserIcon, PlusCircle, LayoutDashboard, CarFront, Users } from 'lucide-react';
 import { User } from '../types';
 
 interface NavbarProps {
@@ -7,8 +7,8 @@ interface NavbarProps {
   onOpenAuth: () => void;
   onLogout: () => void;
   onOpenAddModal: () => void;
-  activeTab: 'catalog' | 'inventory' | 'admin' | 'users';
-  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin' | 'users') => void;
+  activeTab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile';
+  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -98,13 +98,30 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right: Action Buttons (Desktop Only) */}
         <div className="hidden lg:flex items-center space-x-3">
           {user?.role === 'ADMIN' && (
-            <button
-              onClick={() => setActiveTab(activeTab === 'admin' ? 'catalog' : 'admin')}
-              className="px-3.5 py-2 rounded-[8px] text-[14px] font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors border border-white/20 flex items-center gap-1.5"
-            >
-              <LayoutDashboard className="w-4 h-4 text-[#7b39fc]" />
-              {activeTab === 'admin' ? 'Home Catalog' : 'Admin Panel'}
-            </button>
+            <>
+              <button
+                onClick={() => setActiveTab('users')}
+                className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-[8px] font-bold text-xs uppercase tracking-wider transition-all duration-300 ${
+                  activeTab === 'users'
+                    ? 'bg-[#7b39fc] text-white shadow-[0_0_15px_rgba(123,57,252,0.4)]'
+                    : 'bg-transparent text-[#a484d7] hover:bg-[#7b39fc]/10 border border-[#a484d7]/30'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                User DB
+              </button>
+              <button
+                onClick={() => setActiveTab('admin')}
+                className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-[8px] font-bold text-xs uppercase tracking-wider transition-all duration-300 ${
+                  activeTab === 'admin'
+                    ? 'bg-[#7b39fc] text-white shadow-[0_0_15px_rgba(123,57,252,0.4)]'
+                    : 'bg-transparent text-[#a484d7] hover:bg-[#7b39fc]/10 border border-[#a484d7]/30'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                Admin
+              </button>
+            </>
           )}
 
           {user?.role === 'ADMIN' && (
@@ -119,7 +136,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {user ? (
             <div 
-              onClick={() => setActiveTab('users')}
+              onClick={() => setActiveTab('profile')}
               className="flex items-center space-x-3 bg-[#2b2344]/80 border border-[#a484d7]/40 px-3.5 py-1.5 rounded-[8px] cursor-pointer hover:bg-[#392e5a] transition-colors"
             >
               <div className="w-7 h-7 rounded-full bg-[#7b39fc] flex items-center justify-center text-white font-bold text-xs">
@@ -193,12 +210,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button onClick={() => { setActiveTab('catalog'); setMobileMenuOpen(false); }}>Home</button>
             <button onClick={() => { setActiveTab('inventory'); setMobileMenuOpen(false); }}>Full Inventory Page</button>
             {user && (
-              <button onClick={() => { setActiveTab('users'); setMobileMenuOpen(false); }}>User Database</button>
+              <button onClick={() => { setActiveTab('profile'); setMobileMenuOpen(false); }}>My Profile</button>
             )}
             {user?.role === 'ADMIN' && (
-              <button onClick={() => { setActiveTab('admin'); setMobileMenuOpen(false); }} className="text-[#a484d7]">
-                Admin Dashboard
-              </button>
+              <>
+                <button onClick={() => { setActiveTab('users'); setMobileMenuOpen(false); }} className="text-[#a484d7]">
+                  User Database
+                </button>
+                <button onClick={() => { setActiveTab('admin'); setMobileMenuOpen(false); }} className="text-[#a484d7]">
+                  Admin Dashboard
+                </button>
+              </>
             )}
             <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact Us</a>
           </div>

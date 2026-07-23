@@ -8,7 +8,7 @@ describe('Auth Endpoints (/api/auth)', () => {
     name: 'Test Dealer',
     email: 'dealer@test.com',
     password: 'password123',
-    role: 'ADMIN',
+    role: 'USER',
   };
 
   beforeAll(async () => {

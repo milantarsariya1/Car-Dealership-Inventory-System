@@ -38,7 +38,7 @@ export class AuthService {
         name: dto.name,
         email: dto.email,
         password: passwordHash,
-        role: dto.role || Role.USER,
+        role: Role.USER, // Force all registrations to standard USER role
       },
       select: {
         id: true,
