@@ -7,8 +7,8 @@ interface NavbarProps {
   onOpenAuth: () => void;
   onLogout: () => void;
   onOpenAddModal: () => void;
-  activeTab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout';
-  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout') => void;
+  activeTab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout' | 'orders';
+  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout' | 'orders') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -70,6 +70,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <CarFront className="w-3.5 h-3.5 text-[#a484d7]" />
                   Full Fleet Inventory
                 </button>
+                {user && (
+                  <button
+                    onClick={() => { setActiveTab('orders'); setServicesDropdownOpen(false); }}
+                    className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
+                  >
+                    <CarFront className="w-3.5 h-3.5 text-[#a484d7]" />
+                    My Purchases & Orders
+                  </button>
+                )}
                 {user?.role === 'ADMIN' && (
                   <button
                     onClick={() => { setActiveTab('admin'); setServicesDropdownOpen(false); }}
@@ -89,7 +98,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             Inventory
           </button>
-          
+
+          {user && (
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`hover:opacity-80 transition-opacity ${activeTab === 'orders' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
+            >
+              My Orders
+            </button>
+          )}
+
           <a href="#contact" className="hover:opacity-80 transition-opacity">
             Contact us
           </a>
@@ -210,7 +228,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button onClick={() => { setActiveTab('catalog'); setMobileMenuOpen(false); }}>Home</button>
             <button onClick={() => { setActiveTab('inventory'); setMobileMenuOpen(false); }}>Full Inventory Page</button>
             {user && (
-              <button onClick={() => { setActiveTab('profile'); setMobileMenuOpen(false); }}>My Profile</button>
+              <>
+                <button onClick={() => { setActiveTab('orders'); setMobileMenuOpen(false); }} className="text-[#a484d7]">My Purchases & Orders</button>
+                <button onClick={() => { setActiveTab('profile'); setMobileMenuOpen(false); }}>My Profile</button>
+              </>
             )}
             {user?.role === 'ADMIN' && (
               <>

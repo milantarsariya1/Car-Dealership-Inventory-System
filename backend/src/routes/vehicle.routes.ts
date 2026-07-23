@@ -20,4 +20,8 @@ router.delete('/:id', authenticateToken, requireRole([Role.ADMIN]), VehicleContr
 router.post('/:id/purchase', authenticateToken, InventoryController.purchaseVehicle);
 router.post('/:id/restock', authenticateToken, requireRole([Role.ADMIN]), InventoryController.restockVehicle);
 
+// My Orders — logged in user's purchase history
+router.get('/my-orders/list', authenticateToken, InventoryController.getMyOrders);
+
 export default router;
+

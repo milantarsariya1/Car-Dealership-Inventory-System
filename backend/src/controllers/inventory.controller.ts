@@ -36,4 +36,18 @@ export class InventoryController {
       next(error);
     }
   }
+
+  static async getMyOrders(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user!.id;
+      const orders = await InventoryService.getUserOrders(userId);
+      res.status(200).json({
+        success: true,
+        data: orders,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
+

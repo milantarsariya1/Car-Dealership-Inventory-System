@@ -23,6 +23,7 @@ interface CheckoutPageProps {
   onBack: () => void;
   onConfirmPurchase: (vehicleId: string, quantity: number) => Promise<boolean>;
   onOpenAuth: () => void;
+  onViewOrders?: () => void;
 }
 
 export const CheckoutPage: React.FC<CheckoutPageProps> = ({
@@ -31,6 +32,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   onBack,
   onConfirmPurchase,
   onOpenAuth,
+  onViewOrders,
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'emi' | 'wire'>('card');
@@ -118,11 +120,20 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
           </div>
 
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            {onViewOrders && (
+              <button
+                onClick={onViewOrders}
+                className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-bold px-8 py-3.5 rounded-[12px] transition-all shadow-lg hover:shadow-purple-500/30 w-full sm:w-auto flex items-center justify-center gap-2"
+              >
+                <Truck className="w-4 h-4" />
+                Track Order & Dispatch
+              </button>
+            )}
             <button
               onClick={onBack}
-              className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-bold px-8 py-3.5 rounded-[12px] transition-all shadow-lg hover:shadow-purple-500/30 w-full sm:w-auto"
+              className="bg-[#2b2344] hover:bg-[#392e5a] text-white/90 font-cabin font-bold px-6 py-3.5 rounded-[12px] border border-[#a484d7]/30 transition-all w-full sm:w-auto"
             >
-              Return to Vehicle Catalog
+              Return to Catalog
             </button>
           </div>
         </div>

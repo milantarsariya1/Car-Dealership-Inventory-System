@@ -153,4 +153,11 @@ export class ApiService {
     });
     return res.json();
   }
+
+  static async getMyOrders(): Promise<ApiResponse<any[]>> {
+    const res = await fetch(`${API_BASE}/vehicles/my-orders/list`, {
+      headers: this.getHeaders(),
+    });
+    return res.json();
+  }
 }

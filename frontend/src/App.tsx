@@ -13,6 +13,7 @@ import { PurchaseModal } from './components/PurchaseModal';
 import { AdminModal } from './components/AdminModal';
 import { AuthModal } from './components/AuthModal';
 import { CheckoutPage } from './components/CheckoutPage';
+import { MyOrdersPage } from './components/MyOrdersPage';
 import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles, Users, User as UserIcon, Edit3, Save, X } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
@@ -68,8 +69,8 @@ export function App() {
   const [maxPrice, setMaxPrice] = useState<number>(15000000);
   const [sortBy, setSortBy] = useState<string>('newest');
   
-  // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard), 'users' (User Database), 'profile' (Personal Profile), 'checkout' (Dedicated Checkout Page)
-  const [activeTab, setActiveTab] = useState<'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout'>('catalog');
+  // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard), 'users' (User Database), 'profile' (Personal Profile), 'checkout' (Checkout Page), 'orders' (My Orders)
+  const [activeTab, setActiveTab] = useState<'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout' | 'orders'>('catalog');
   const [checkoutVehicle, setCheckoutVehicle] = useState<Vehicle | null>(null);
 
   const startCheckout = (vehicle: Vehicle) => {
@@ -1033,6 +1034,15 @@ export function App() {
           onBack={() => setActiveTab('inventory')}
           onConfirmPurchase={handleConfirmPurchase}
           onOpenAuth={() => setShowAuthModal(true)}
+          onViewOrders={() => setActiveTab('orders')}
+        />
+      )}
+
+      {/* VIEW 7: MY ORDERS PAGE */}
+      {activeTab === 'orders' && user && (
+        <MyOrdersPage
+          user={user}
+          onBack={() => setActiveTab('catalog')}
         />
       )}
 
