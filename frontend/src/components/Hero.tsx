@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface HeroProps {
   onPrimaryClick: () => void;
@@ -6,75 +6,49 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const video = videoRef.current;
-    const section = sectionRef.current;
-    if (!video || !section) return;
-
-    // Pause autoplay to allow scroll-driven video scrubbing
-    video.pause();
-
-    let animationFrameId: number;
-    let targetTime = 0;
-
     const handleScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const sectionHeight = rect.height || window.innerHeight;
-      
-      // Calculate scroll progress through hero section
-      const scrollDistance = -rect.top;
-      const maxScroll = sectionHeight;
-      const progress = Math.max(0, Math.min(1, scrollDistance / maxScroll));
-
-      if (video.duration && !isNaN(video.duration)) {
-        targetTime = progress * video.duration;
-      }
+      setScrollY(window.scrollY);
     };
-
-    const updateVideoTime = () => {
-      if (video && video.duration && !isNaN(video.duration)) {
-        // Smooth linear interpolation (lerp) for liquid-smooth frame scrubbing
-        const diff = targetTime - video.currentTime;
-        if (Math.abs(diff) > 0.01) {
-          video.currentTime += diff * 0.2;
-        }
-      }
-      animationFrameId = requestAnimationFrame(updateVideoTime);
-    };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    animationFrameId = requestAnimationFrame(updateVideoTime);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(animationFrameId);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Calculate subtle parallax translateY & scale factor on scroll
+  const parallaxOffset = scrollY * 0.35;
+  const parallaxScale = 1 + Math.min(scrollY * 0.0003, 0.15);
+
   return (
-    <section ref={sectionRef} className="relative w-full min-h-screen flex flex-col items-center justify-start overflow-hidden bg-[#0f172a]">
-      {/* Full-screen Scroll-Scrubbed HTML5 Video Background */}
-      <video
-        ref={videoRef}
-        muted
-        playsInline
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover min-h-screen z-0"
+    <section className="relative w-full min-h-screen flex flex-col items-center justify-start overflow-hidden bg-[#0f172a]">
+      {/* Full-screen Continuous 60fps HTML5 Video Background with Parallax Depth */}
+      <div 
+        className="absolute inset-0 w-full h-full min-h-screen z-0 transition-transform duration-75 ease-out"
+        style={{
+          transform: `translate3d(0, ${parallaxOffset}px, 0) scale(${parallaxScale})`,
+        }}
       >
-        <source
-          src="https://assets.mixkit.co/videos/63/63-720.mp4"
-          type="video/mp4"
-        />
-        <source
-          src="https://cdn.coverr.co/videos/coverr-a-black-sports-car-on-a-road-5444/1080p.mp4"
-          type="video/mp4"
-        />
-        Your browser does not support the video tag.
-      </video>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover min-h-screen"
+        >
+          <source
+            src="https://assets.mixkit.co/videos/63/63-720.mp4"
+            type="video/mp4"
+          />
+          <source
+            src="https://cdn.coverr.co/videos/coverr-a-black-sports-car-on-a-road-5444/1080p.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+        {/* Subtle Dark Vignette Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#0b0914]" />
+      </div>
 
       {/* Centered Hero Content Container */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-[900px] px-6 mt-32 mb-16">
