@@ -17,7 +17,8 @@ router.put('/:id', authenticateToken, requireRole([Role.ADMIN]), VehicleControll
 router.delete('/:id', authenticateToken, requireRole([Role.ADMIN]), VehicleController.deleteVehicle);
 
 // Inventory Management Endpoints (Purchase & Restock)
-router.post('/:id/purchase', authenticateToken, InventoryController.purchaseVehicle);
+// Purchasing is a customer action — admins manage stock, they don't buy it.
+router.post('/:id/purchase', authenticateToken, requireRole([Role.USER]), InventoryController.purchaseVehicle);
 router.post('/:id/restock', authenticateToken, requireRole([Role.ADMIN]), InventoryController.restockVehicle);
 
 // My Orders — logged in user's purchase history

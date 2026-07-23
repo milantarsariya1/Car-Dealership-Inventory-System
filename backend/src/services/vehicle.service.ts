@@ -33,11 +33,31 @@ export interface SearchVehicleFilters {
   query?: string;
 }
 
+/**
+ * Shared field-level validation for create and update payloads.
+ * Rejects negative prices, negative/fractional quantities, and unknown categories.
+ */
+const validateVehicleFields = (dto: UpdateVehicleDTO) => {
+  if (dto.price !== undefined && (typeof dto.price !== 'number' || Number.isNaN(dto.price) || dto.price < 0)) {
+    throw new AppError('Price must be a non-negative number', 400);
+  }
+
+  if (dto.quantity !== undefined && (!Number.isInteger(dto.quantity) || dto.quantity < 0)) {
+    throw new AppError('Quantity must be a non-negative whole number', 400);
+  }
+
+  if (dto.category !== undefined && !Object.values(Category).includes(dto.category)) {
+    throw new AppError(`Category must be one of: ${Object.values(Category).join(', ')}`, 400);
+  }
+};
+
 export class VehicleService {
   static async createVehicle(dto: CreateVehicleDTO) {
     if (!dto.vin || !dto.make || !dto.model || !dto.category || dto.price === undefined || dto.quantity === undefined) {
       throw new AppError('VIN, make, model, category, price, and quantity are required', 400);
     }
+
+    validateVehicleFields(dto);
 
     const existing = await prisma.vehicle.findUnique({
       where: { vin: dto.vin },
@@ -74,13 +94,10 @@ export class VehicleService {
     }
 
     if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
-      whereClause.price = {};
-      if (filters.minPrice !== undefined) {
-        whereClause.price.gte = Number(filters.minPrice);
-      }
-      if (filters.maxPrice !== undefined) {
-        whereClause.price.lte = Number(filters.maxPrice);
-      }
+      whereClause.price = {
+        ...(filters.minPrice !== undefined && { gte: Number(filters.minPrice) }),
+        ...(filters.maxPrice !== undefined && { lte: Number(filters.maxPrice) }),
+      };
     }
 
     if (filters.query) {
@@ -110,6 +127,7 @@ export class VehicleService {
   }
 
   static async updateVehicle(id: string, dto: UpdateVehicleDTO) {
+    validateVehicleFields(dto);
     await this.getVehicleById(id);
 
     return await prisma.vehicle.update({

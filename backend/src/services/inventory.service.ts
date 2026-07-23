@@ -4,8 +4,8 @@ import { TransactionType } from '@prisma/client';
 
 export class InventoryService {
   static async purchaseVehicle(userId: string, vehicleId: string, quantity: number = 1) {
-    if (quantity <= 0) {
-      throw new AppError('Quantity must be greater than zero', 400);
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+      throw new AppError('Quantity must be a positive whole number', 400);
     }
 
     return await prisma.$transaction(async (tx: any) => {
@@ -17,16 +17,19 @@ export class InventoryService {
         throw new AppError('Vehicle not found', 404);
       }
 
-      if (vehicle.quantity < quantity) {
+      // Atomic conditional decrement: the WHERE clause guarantees stock can
+      // never go negative, even under concurrent purchase requests.
+      const updated = await tx.vehicle.updateMany({
+        where: { id: vehicleId, quantity: { gte: quantity } },
+        data: { quantity: { decrement: quantity } },
+      });
+
+      if (updated.count === 0) {
         throw new AppError('Vehicle is out of stock', 400);
       }
 
-      // Update vehicle stock quantity
-      const updatedVehicle = await tx.vehicle.update({
+      const updatedVehicle = await tx.vehicle.findUniqueOrThrow({
         where: { id: vehicleId },
-        data: {
-          quantity: vehicle.quantity - quantity,
-        },
       });
 
       // Create transaction record
@@ -50,8 +53,8 @@ export class InventoryService {
   }
 
   static async restockVehicle(userId: string, vehicleId: string, quantity: number) {
-    if (quantity <= 0) {
-      throw new AppError('Restock quantity must be greater than zero', 400);
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+      throw new AppError('Restock quantity must be a positive whole number', 400);
     }
 
     return await prisma.$transaction(async (tx: any) => {
@@ -66,7 +69,7 @@ export class InventoryService {
       const updatedVehicle = await tx.vehicle.update({
         where: { id: vehicleId },
         data: {
-          quantity: vehicle.quantity + quantity,
+          quantity: { increment: quantity },
         },
       });
 
@@ -113,7 +116,6 @@ export class InventoryService {
       },
     });
 
-    // Attach simulated dispatch/delivery status based on order age
     return orders.map((order: any) => {
       const ageMs = Date.now() - new Date(order.createdAt).getTime();
       const ageHours = ageMs / (1000 * 60 * 60);
@@ -208,4 +210,3 @@ export class InventoryService {
     });
   }
 }
-

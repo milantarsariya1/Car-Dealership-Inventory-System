@@ -5,6 +5,9 @@ import { env } from '../config/env';
 import { AppError } from '../middleware/error.middleware';
 import { Role } from '@prisma/client';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 6;
+
 export interface RegisterDTO {
   name: string;
   email: string;
@@ -27,6 +30,14 @@ export class AuthService {
   static async register(dto: RegisterDTO) {
     if (!dto.email || !dto.password || !dto.name) {
       throw new AppError('Name, email, and password are required', 400);
+    }
+
+    if (!EMAIL_REGEX.test(dto.email)) {
+      throw new AppError('A valid email address is required', 400);
+    }
+
+    if (dto.password.length < MIN_PASSWORD_LENGTH) {
+      throw new AppError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters long`, 400);
     }
 
     const existingUser = await prisma.user.findUnique({
