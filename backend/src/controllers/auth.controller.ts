@@ -55,4 +55,17 @@ export class AuthController {
       next(error);
     }
   }
+
+  static async updateUserByAdmin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id as string;
+      const updatedUser = await AuthService.updateUserByAdmin(userId, req.body);
+      res.status(200).json({
+        success: true,
+        data: updatedUser,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

@@ -40,8 +40,40 @@ export class ApiService {
     return res.json();
   }
 
-  static async updateProfile(data: { name?: string; email?: string; password?: string }): Promise<ApiResponse<User>> {
+  static async updateProfile(data: {
+    name?: string;
+    email?: string;
+    password?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    country?: string;
+  }): Promise<ApiResponse<User>> {
     const res = await fetch(`${API_BASE}/auth/profile`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  }
+
+  static async updateUserByAdmin(
+    userId: string,
+    data: {
+      name?: string;
+      email?: string;
+      role?: string;
+      phone?: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      pincode?: string;
+      country?: string;
+    }
+  ): Promise<ApiResponse<User>> {
+    const res = await fetch(`${API_BASE}/auth/users/${userId}`, {
       method: 'PUT',
       headers: this.getHeaders(),
       body: JSON.stringify(data),

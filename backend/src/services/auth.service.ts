@@ -9,6 +9,12 @@ export interface RegisterDTO {
   email: string;
   password: string;
   role?: Role;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  country?: string;
 }
 
 export interface LoginDTO {
@@ -39,12 +45,24 @@ export class AuthService {
         email: dto.email,
         password: passwordHash,
         role: Role.USER, // Force all registrations to standard USER role
+        phone: dto.phone || null,
+        address: dto.address || null,
+        city: dto.city || null,
+        state: dto.state || null,
+        pincode: dto.pincode || null,
+        country: dto.country || 'India',
       },
       select: {
         id: true,
         name: true,
         email: true,
         role: true,
+        phone: true,
+        address: true,
+        city: true,
+        state: true,
+        pincode: true,
+        country: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -85,6 +103,12 @@ export class AuthService {
         name: user.name,
         email: user.email,
         role: user.role,
+        phone: user.phone,
+        address: user.address,
+        city: user.city,
+        state: user.state,
+        pincode: user.pincode,
+        country: user.country,
       },
     };
   }
@@ -96,6 +120,12 @@ export class AuthService {
         name: true,
         email: true,
         role: true,
+        phone: true,
+        address: true,
+        city: true,
+        state: true,
+        pincode: true,
+        country: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -106,7 +136,20 @@ export class AuthService {
     return users;
   }
 
-  static async updateProfile(userId: string, data: { name?: string; email?: string; password?: string }) {
+  static async updateProfile(
+    userId: string,
+    data: {
+      name?: string;
+      email?: string;
+      password?: string;
+      phone?: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      pincode?: string;
+      country?: string;
+    }
+  ) {
     const userExists = await prisma.user.findUnique({ where: { id: userId } });
     if (!userExists) {
       throw new AppError('User not found', 404);
@@ -114,9 +157,13 @@ export class AuthService {
 
     const updateData: any = {};
 
-    if (data.name) {
-      updateData.name = data.name;
-    }
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.phone !== undefined) updateData.phone = data.phone;
+    if (data.address !== undefined) updateData.address = data.address;
+    if (data.city !== undefined) updateData.city = data.city;
+    if (data.state !== undefined) updateData.state = data.state;
+    if (data.pincode !== undefined) updateData.pincode = data.pincode;
+    if (data.country !== undefined) updateData.country = data.country;
 
     if (data.email && data.email !== userExists.email) {
       const emailTaken = await prisma.user.findUnique({ where: { email: data.email } });
@@ -139,6 +186,71 @@ export class AuthService {
         name: true,
         email: true,
         role: true,
+        phone: true,
+        address: true,
+        city: true,
+        state: true,
+        pincode: true,
+        country: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return updatedUser;
+  }
+
+  static async updateUserByAdmin(
+    userId: string,
+    data: {
+      name?: string;
+      email?: string;
+      role?: Role;
+      phone?: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      pincode?: string;
+      country?: string;
+    }
+  ) {
+    const userExists = await prisma.user.findUnique({ where: { id: userId } });
+    if (!userExists) {
+      throw new AppError('Target user not found', 404);
+    }
+
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.role !== undefined) updateData.role = data.role;
+    if (data.phone !== undefined) updateData.phone = data.phone;
+    if (data.address !== undefined) updateData.address = data.address;
+    if (data.city !== undefined) updateData.city = data.city;
+    if (data.state !== undefined) updateData.state = data.state;
+    if (data.pincode !== undefined) updateData.pincode = data.pincode;
+    if (data.country !== undefined) updateData.country = data.country;
+
+    if (data.email && data.email !== userExists.email) {
+      const emailTaken = await prisma.user.findUnique({ where: { email: data.email } });
+      if (emailTaken) {
+        throw new AppError('Email is already in use by another user', 400);
+      }
+      updateData.email = data.email;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        phone: true,
+        address: true,
+        city: true,
+        state: true,
+        pincode: true,
+        country: true,
         createdAt: true,
         updatedAt: true,
       },

@@ -46,6 +46,13 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [cardName, setCardName] = useState(user?.name || 'Valued Customer');
   const [upiId, setUpiId] = useState('customer@okaxis');
 
+  // Customer Delivery & Shipping Address States (Pre-filled from User Profile)
+  const [deliveryPhone, setDeliveryPhone] = useState(user?.phone || '+91 98200 12345');
+  const [deliveryAddress, setDeliveryAddress] = useState(user?.address || 'Flat 402, Seawood Towers, Bandra West');
+  const [deliveryCity, setDeliveryCity] = useState(user?.city || 'Mumbai');
+  const [deliveryState, setDeliveryState] = useState(user?.state || 'Maharashtra');
+  const [deliveryPincode, setDeliveryPincode] = useState(user?.pincode || '400050');
+
   const unitPrice = vehicle.price;
   const totalPrice = unitPrice * quantity;
 
@@ -216,6 +223,76 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     <Truck className="w-3.5 h-3.5 text-[#a484d7]" /> Showroom Direct
                   </span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Customer Delivery & Shipping Address Form */}
+          <div className="glass-panel p-6 rounded-[24px] border border-[#a484d7]/25 bg-[#17122b]/80 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#a484d7]/20 pb-3">
+              <h3 className="text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+                <Truck className="w-5 h-5 text-[#a484d7]" />
+                Customer Delivery Destination
+              </h3>
+              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#7b39fc]/20 text-[#a484d7] border border-[#7b39fc]/30 font-cabin">
+                Auto-filled from Profile
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-inter">
+              <div>
+                <label className="text-white/70 text-[11px] font-cabin block mb-1">Contact Phone Number</label>
+                <input
+                  type="text"
+                  value={deliveryPhone}
+                  onChange={(e) => setDeliveryPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                />
+              </div>
+
+              <div>
+                <label className="text-white/70 text-[11px] font-cabin block mb-1">Pincode / Postal Code</label>
+                <input
+                  type="text"
+                  value={deliveryPincode}
+                  onChange={(e) => setDeliveryPincode(e.target.value)}
+                  placeholder="400050"
+                  className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white font-mono rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="text-white/70 text-[11px] font-cabin block mb-1">Street Address & Landmark</label>
+                <input
+                  type="text"
+                  value={deliveryAddress}
+                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  placeholder="101 Luxury Palms, Bandra West"
+                  className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                />
+              </div>
+
+              <div>
+                <label className="text-white/70 text-[11px] font-cabin block mb-1">City</label>
+                <input
+                  type="text"
+                  value={deliveryCity}
+                  onChange={(e) => setDeliveryCity(e.target.value)}
+                  placeholder="Mumbai"
+                  className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                />
+              </div>
+
+              <div>
+                <label className="text-white/70 text-[11px] font-cabin block mb-1">State</label>
+                <input
+                  type="text"
+                  value={deliveryState}
+                  onChange={(e) => setDeliveryState(e.target.value)}
+                  placeholder="Maharashtra"
+                  className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                />
               </div>
             </div>
           </div>

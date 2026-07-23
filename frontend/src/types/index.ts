@@ -7,6 +7,12 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  country?: string;
   createdAt?: string;
 }
 

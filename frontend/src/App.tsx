@@ -29,7 +29,38 @@ export function App() {
   const [editName, setEditName] = useState<string>('');
   const [editEmail, setEditEmail] = useState<string>('');
   const [editPassword, setEditPassword] = useState<string>('');
+  const [editPhone, setEditPhone] = useState<string>('');
+  const [editAddress, setEditAddress] = useState<string>('');
+  const [editCity, setEditCity] = useState<string>('');
+  const [editState, setEditState] = useState<string>('');
+  const [editPincode, setEditPincode] = useState<string>('');
+  const [editCountry, setEditCountry] = useState<string>('');
   const [profileSaving, setProfileSaving] = useState<boolean>(false);
+
+  // Admin User Edit State
+  const [adminEditUser, setAdminEditUser] = useState<User | null>(null);
+  const [adminUserForm, setAdminUserForm] = useState<{
+    name: string;
+    email: string;
+    role: 'USER' | 'ADMIN';
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+    country: string;
+  }>({
+    name: '',
+    email: '',
+    role: 'USER',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    pincode: '',
+    country: 'India',
+  });
+  const [adminUserSaving, setAdminUserSaving] = useState<boolean>(false);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -146,6 +177,12 @@ export function App() {
     if (user) {
       setEditName(user.name);
       setEditEmail(user.email);
+      setEditPhone(user.phone || '');
+      setEditAddress(user.address || '');
+      setEditCity(user.city || '');
+      setEditState(user.state || '');
+      setEditPincode(user.pincode || '');
+      setEditCountry(user.country || 'India');
       setEditPassword('');
       setIsEditingProfile(true);
     }
@@ -163,13 +200,19 @@ export function App() {
         name: editName,
         email: editEmail,
         password: editPassword.trim() ? editPassword : undefined,
+        phone: editPhone,
+        address: editAddress,
+        city: editCity,
+        state: editState,
+        pincode: editPincode,
+        country: editCountry,
       });
       if (res.success && res.data) {
         setUser(res.data);
         localStorage.setItem('user', JSON.stringify(res.data));
         setIsEditingProfile(false);
         setEditPassword('');
-        showNotification('success', 'Profile updated successfully!');
+        showNotification('success', 'Profile & delivery details updated successfully!');
       } else {
         showNotification('error', res.error || 'Failed to update profile.');
       }
@@ -177,6 +220,41 @@ export function App() {
       showNotification('error', 'Failed to update profile.');
     } finally {
       setProfileSaving(false);
+    }
+  };
+
+  const handleAdminStartEditUser = (u: User) => {
+    setAdminEditUser(u);
+    setAdminUserForm({
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      phone: u.phone || '',
+      address: u.address || '',
+      city: u.city || '',
+      state: u.state || '',
+      pincode: u.pincode || '',
+      country: u.country || 'India',
+    });
+  };
+
+  const handleAdminSaveUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!adminEditUser) return;
+    setAdminUserSaving(true);
+    try {
+      const res = await ApiService.updateUserByAdmin(adminEditUser.id, adminUserForm);
+      if (res.success && res.data) {
+        showNotification('success', `Updated details for ${res.data.name}!`);
+        setAdminEditUser(null);
+        fetchUsers();
+      } else {
+        showNotification('error', res.error || 'Failed to update user.');
+      }
+    } catch (err: any) {
+      showNotification('error', err.message || 'Failed to update user.');
+    } finally {
+      setAdminUserSaving(false);
     }
   };
 
@@ -662,20 +740,26 @@ export function App() {
                     <tr>
                       <th className="p-3.5">User Details</th>
                       <th className="p-3.5">Email</th>
+                      <th className="p-3.5">Phone</th>
+                      <th className="p-3.5">Delivery Address</th>
                       <th className="p-3.5">Role</th>
-                      <th className="p-3.5">Joined Date</th>
+                      <th className="p-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#a484d7]/15">
                     {dbUsers.map((u) => (
                       <tr key={u.id} className="hover:bg-[#2b2344]/40 transition-colors">
                         <td className="p-3.5 font-bold text-white flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[#7b39fc] flex items-center justify-center text-white font-bold text-xs uppercase">
+                          <div className="w-8 h-8 rounded-full bg-[#7b39fc] flex items-center justify-center text-white font-bold text-xs uppercase shrink-0">
                             {u.name.charAt(0)}
                           </div>
                           {u.name}
                         </td>
                         <td className="p-3.5 font-mono text-white/60">{u.email}</td>
+                        <td className="p-3.5 font-mono text-white/80">{u.phone || 'N/A'}</td>
+                        <td className="p-3.5 text-white/70 max-w-[200px] truncate">
+                          {u.address ? `${u.address}, ${u.city || ''} ${u.pincode || ''}` : 'Not configured'}
+                        </td>
                         <td className="p-3.5">
                           {u.role === 'ADMIN' ? (
                             <span className="px-2.5 py-1 rounded-[6px] bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/40 text-[10px] flex items-center w-max gap-1">
@@ -688,8 +772,14 @@ export function App() {
                             </span>
                           )}
                         </td>
-                        <td className="p-3.5 font-mono text-white/50">
-                          {new Date(u.createdAt || '').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                        <td className="p-3.5 text-right">
+                          <button
+                            onClick={() => handleAdminStartEditUser(u)}
+                            className="px-3 py-1.5 bg-[#7b39fc]/20 hover:bg-[#7b39fc] text-[#a484d7] hover:text-white rounded-[6px] border border-[#7b39fc]/40 font-bold transition-all flex items-center gap-1.5 ml-auto text-[11px]"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            Edit User
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -765,22 +855,39 @@ export function App() {
               {!isEditingProfile ? (
                 /* READ-ONLY VIEW */
                 <div className="bg-[#130e26]/50 rounded-xl p-5 border border-[#a484d7]/10 space-y-4">
-                  <div>
-                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Full Name</label>
-                    <div className="text-white font-medium text-sm mt-1">{user.name}</div>
-                  </div>
-                  <div>
-                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Email Address</label>
-                    <div className="text-white font-mono text-sm mt-1">{user.email}</div>
-                  </div>
-                  <div>
-                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Password</label>
-                    <div className="text-white font-mono text-sm mt-1 tracking-[0.2em]">********</div>
-                  </div>
-                  {user.createdAt && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
+                      <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Full Name</label>
+                      <div className="text-white font-medium text-sm mt-1">{user.name}</div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Email Address</label>
+                      <div className="text-white font-mono text-sm mt-1">{user.email}</div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Phone Number</label>
+                      <div className="text-white font-mono text-sm mt-1">{user.phone || 'Not provided'}</div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Password</label>
+                      <div className="text-white font-mono text-sm mt-1 tracking-[0.2em]">********</div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-[#a484d7]/15">
+                    <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-2">Delivery & Shipping Address</label>
+                    <div className="bg-[#1c1634]/60 p-3.5 rounded-lg border border-[#a484d7]/20 text-xs text-white/80 space-y-1 font-inter">
+                      <div className="font-bold text-white">{user.address || 'No street address configured'}</div>
+                      {user.city && (
+                        <div>{user.city}, {user.state} - {user.pincode} ({user.country || 'India'})</div>
+                      )}
+                    </div>
+                  </div>
+
+                  {user.createdAt && (
+                    <div className="pt-2 border-t border-[#a484d7]/15">
                       <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Joined Date</label>
-                      <div className="text-white font-mono text-sm mt-1 text-white/80">
+                      <div className="text-white font-mono text-xs mt-1 text-white/80">
                         {new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </div>
                     </div>
@@ -788,28 +895,90 @@ export function App() {
                 </div>
               ) : (
                 /* EDIT FORM VIEW */
-                <form onSubmit={handleSaveProfile} className="bg-[#130e26]/80 rounded-xl p-6 border border-[#a484d7]/30 space-y-5">
+                <form onSubmit={handleSaveProfile} className="bg-[#130e26]/80 rounded-xl p-6 border border-[#a484d7]/30 space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">Full Name</label>
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white font-medium text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">Email Address</label>
+                      <input
+                        type="email"
+                        value={editEmail}
+                        onChange={(e) => setEditEmail(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
+                        required
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">Full Name</label>
+                    <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">Contact Phone Number</label>
                     <input
                       type="text"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white font-medium text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
-                      required
+                      value={editPhone}
+                      onChange={(e) => setEditPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
                     />
                   </div>
-                  <div>
-                    <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">Email Address</label>
-                    <input
-                      type="email"
-                      value={editEmail}
-                      onChange={(e) => setEditEmail(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
-                      required
-                    />
+
+                  {/* Delivery Address Fields */}
+                  <div className="space-y-3 pt-2 border-t border-[#a484d7]/20">
+                    <span className="text-[10px] uppercase font-extrabold text-white tracking-wider block">Default Delivery & Shipping Destination</span>
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1">Street Address</label>
+                      <input
+                        type="text"
+                        value={editAddress}
+                        onChange={(e) => setEditAddress(e.target.value)}
+                        placeholder="101 Luxury Palms, Bandra West"
+                        className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1">City</label>
+                        <input
+                          type="text"
+                          value={editCity}
+                          onChange={(e) => setEditCity(e.target.value)}
+                          placeholder="Mumbai"
+                          className="w-full px-3 py-2 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white text-xs focus:outline-none focus:border-[#7b39fc]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1">State</label>
+                        <input
+                          type="text"
+                          value={editState}
+                          onChange={(e) => setEditState(e.target.value)}
+                          placeholder="Maharashtra"
+                          className="w-full px-3 py-2 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white text-xs focus:outline-none focus:border-[#7b39fc]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1">Pincode</label>
+                        <input
+                          type="text"
+                          value={editPincode}
+                          onChange={(e) => setEditPincode(e.target.value)}
+                          placeholder="400050"
+                          className="w-full px-3 py-2 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white text-xs font-mono focus:outline-none focus:border-[#7b39fc]"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div>
+
+                  <div className="pt-2">
                     <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">
                       New Password <span className="text-white/40 font-normal lowercase">(leave blank to keep current)</span>
                     </label>
@@ -836,7 +1005,7 @@ export function App() {
                       className="px-5 py-2 bg-[#7b39fc] hover:bg-[#6826e3] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-2 transition-colors shadow-md disabled:opacity-50"
                     >
                       <Save className="w-4 h-4" />
-                      {profileSaving ? 'Saving...' : 'Save Changes'}
+                      {profileSaving ? 'Saving...' : 'Save Profile & Delivery Data'}
                     </button>
                   </div>
                 </form>
@@ -893,6 +1062,142 @@ export function App() {
           onClose={() => setAdminModalState({ ...adminModalState, isOpen: false })}
           onSubmit={handleAdminSubmit}
         />
+      )}
+
+      {/* Admin User Account & Delivery Editor Modal */}
+      {adminEditUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-manrope">
+          <div className="glass-panel w-full max-w-xl rounded-[20px] overflow-hidden border border-[#a484d7]/30 bg-[#1c1634] shadow-2xl relative">
+            <div className="px-6 py-4 border-b border-[#a484d7]/20 flex items-center justify-between bg-[#130e26]">
+              <div className="flex items-center space-x-2.5">
+                <div className="p-2 rounded-[8px] bg-[#7b39fc]/20 text-[#a484d7]">
+                  <Users className="w-5 h-5" />
+                </div>
+                <h2 className="text-lg font-extrabold text-white tracking-tight">Edit User Account & Delivery Data</h2>
+              </div>
+              <button
+                onClick={() => setAdminEditUser(null)}
+                className="p-1.5 rounded-[8px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAdminSaveUser} className="p-6 space-y-4 text-xs font-inter">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-white/70 text-[11px] font-cabin block mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    value={adminUserForm.name}
+                    onChange={(e) => setAdminUserForm({ ...adminUserForm, name: e.target.value })}
+                    className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-white/70 text-[11px] font-cabin block mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={adminUserForm.email}
+                    onChange={(e) => setAdminUserForm({ ...adminUserForm, email: e.target.value })}
+                    className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white font-mono rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-white/70 text-[11px] font-cabin block mb-1">Account Role</label>
+                  <select
+                    value={adminUserForm.role}
+                    onChange={(e) => setAdminUserForm({ ...adminUserForm, role: e.target.value as 'USER' | 'ADMIN' })}
+                    className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                  >
+                    <option value="USER">USER</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-white/70 text-[11px] font-cabin block mb-1">Contact Phone</label>
+                  <input
+                    type="text"
+                    value={adminUserForm.phone}
+                    onChange={(e) => setAdminUserForm({ ...adminUserForm, phone: e.target.value })}
+                    placeholder="+91 98765 43210"
+                    className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[#a484d7]/20 space-y-3">
+                <span className="text-white font-bold block font-cabin text-xs">Customer Delivery Address</span>
+                <div>
+                  <label className="text-white/70 text-[11px] font-cabin block mb-1">Street Address</label>
+                  <input
+                    type="text"
+                    value={adminUserForm.address}
+                    onChange={(e) => setAdminUserForm({ ...adminUserForm, address: e.target.value })}
+                    placeholder="Street / Flat / House Address"
+                    className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2.5 focus:outline-none focus:border-[#7b39fc]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="text-white/70 text-[11px] font-cabin block mb-1">City</label>
+                    <input
+                      type="text"
+                      value={adminUserForm.city}
+                      onChange={(e) => setAdminUserForm({ ...adminUserForm, city: e.target.value })}
+                      placeholder="City"
+                      className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2 focus:outline-none focus:border-[#7b39fc]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-white/70 text-[11px] font-cabin block mb-1">State</label>
+                    <input
+                      type="text"
+                      value={adminUserForm.state}
+                      onChange={(e) => setAdminUserForm({ ...adminUserForm, state: e.target.value })}
+                      placeholder="State"
+                      className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white rounded-[8px] p-2 focus:outline-none focus:border-[#7b39fc]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-white/70 text-[11px] font-cabin block mb-1">Pincode</label>
+                    <input
+                      type="text"
+                      value={adminUserForm.pincode}
+                      onChange={(e) => setAdminUserForm({ ...adminUserForm, pincode: e.target.value })}
+                      placeholder="Pincode"
+                      className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white font-mono rounded-[8px] p-2 focus:outline-none focus:border-[#7b39fc]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 flex items-center justify-end space-x-3 border-t border-[#a484d7]/20 font-cabin">
+                <button
+                  type="button"
+                  onClick={() => setAdminEditUser(null)}
+                  className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={adminUserSaving}
+                  className="px-5 py-2 bg-[#7b39fc] hover:bg-[#6826e3] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-1.5 transition-colors shadow-md disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  {adminUserSaving ? 'Saving...' : 'Save User Account'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

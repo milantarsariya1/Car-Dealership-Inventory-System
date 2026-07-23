@@ -11,12 +11,25 @@ async function main() {
   const adminPasswordHash = await bcrypt.hash('admin123', 10);
   const admin = await prisma.user.upsert({
     where: { email: 'admin@dealership.com' },
-    update: {},
+    update: {
+      phone: '+91 98765 00001',
+      address: 'Apex Motors HQ, Worli Sea Face Road',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pincode: '400018',
+      country: 'India',
+    },
     create: {
       name: 'Executive Admin',
       email: 'admin@dealership.com',
       password: adminPasswordHash,
       role: Role.ADMIN,
+      phone: '+91 98765 00001',
+      address: 'Apex Motors HQ, Worli Sea Face Road',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pincode: '400018',
+      country: 'India',
     },
   });
   console.log('Created Admin User:', admin.email);
@@ -25,12 +38,25 @@ async function main() {
   const userPasswordHash = await bcrypt.hash('user123', 10);
   const user = await prisma.user.upsert({
     where: { email: 'customer@gmail.com' },
-    update: {},
+    update: {
+      phone: '+91 98200 12345',
+      address: 'Flat 402, Seawood Towers, Bandra West',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pincode: '400050',
+      country: 'India',
+    },
     create: {
       name: 'John Doe',
       email: 'customer@gmail.com',
       password: userPasswordHash,
       role: Role.USER,
+      phone: '+91 98200 12345',
+      address: 'Flat 402, Seawood Towers, Bandra West',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pincode: '400050',
+      country: 'India',
     },
   });
   console.log('Created Regular User:', user.email);
