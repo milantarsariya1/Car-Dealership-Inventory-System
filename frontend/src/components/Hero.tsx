@@ -8,7 +8,7 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) => {
   return (
     <section className="relative w-full min-h-screen flex flex-col items-center justify-start overflow-hidden bg-[#0f172a]">
-      {/* Full-screen Opaque HTML5 Video Background */}
+      {/* Full-screen Opaque HTML5 Video Background - Luxury Sports Car Video */}
       <video
         autoPlay
         loop
@@ -17,7 +17,11 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
         className="absolute inset-0 w-full h-full object-cover min-h-screen z-0"
       >
         <source
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260210_031346_d87182fb-b0af-4273-84d1-c6fd17d6bf0f.mp4"
+          src="https://cdn.coverr.co/videos/coverr-a-black-sports-car-on-a-road-5444/1080p.mp4"
+          type="video/mp4"
+        />
+        <source
+          src="https://cdn.coverr.co/videos/coverr-driving-a-car-at-night-5464/1080p.mp4"
           type="video/mp4"
         />
         Your browser does not support the video tag.
@@ -32,28 +36,28 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
             New
           </span>
           <span className="text-white font-cabin font-medium text-[14px]">
-            Say Hello to Datacore v3.2
+            ApexMotors 2026 Next-Gen Fleet v3.2
           </span>
         </div>
 
         {/* Headline */}
         <h1 className="font-instrument text-white text-5xl md:text-7xl lg:text-[96px] leading-[1.1] tracking-tight mb-6">
-          Book your perfect stay instantly <span className="italic font-normal px-1">and</span> hassle-free
+          Drive your dream vehicle instantly <span className="italic font-normal px-1">and</span> hassle-free
         </h1>
 
         {/* Subtext */}
         <p className="font-inter font-normal text-[18px] text-white/70 max-w-[662px] leading-relaxed mb-10">
-          Discover handpicked vehicles, resorts, and luxury stays across your favorite destinations. Enjoy exclusive deals, fast booking, and 24/7 support.
+          Discover handpicked luxury sedans, electric vehicles, sports coupes, and rugged trucks. Enjoy real-time inventory updates, atomic purchase orders, and 24/7 dealership support.
         </p>
 
         {/* Call to Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          {/* Button 1: Book a Free Demo / Browse Inventory */}
+          {/* Button 1: Browse Vehicle Inventory */}
           <button
             onClick={onPrimaryClick}
             className="bg-[#7b39fc] hover:bg-[#6826e3] text-white font-cabin font-medium text-[16px] rounded-[10px] px-8 py-3.5 transition-all shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02] active:scale-[0.98]"
           >
-            Book a Free Demo
+            Browse Vehicle Inventory
           </button>
 
           {/* Button 2: Get Started Now */}
