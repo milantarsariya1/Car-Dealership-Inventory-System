@@ -12,6 +12,7 @@ import { Footer } from './components/Footer';
 import { PurchaseModal } from './components/PurchaseModal';
 import { AdminModal } from './components/AdminModal';
 import { AuthModal } from './components/AuthModal';
+import { CheckoutPage } from './components/CheckoutPage';
 import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles, Users, User as UserIcon, Edit3, Save, X } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
@@ -36,8 +37,15 @@ export function App() {
   const [maxPrice, setMaxPrice] = useState<number>(15000000);
   const [sortBy, setSortBy] = useState<string>('newest');
   
-  // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard), 'users' (User Database), 'profile' (Personal Profile)
-  const [activeTab, setActiveTab] = useState<'catalog' | 'inventory' | 'admin' | 'users' | 'profile'>('catalog');
+  // Navigation View State: 'catalog' (Home), 'inventory' (Dedicated Full Page), 'admin' (Admin Dashboard), 'users' (User Database), 'profile' (Personal Profile), 'checkout' (Dedicated Checkout Page)
+  const [activeTab, setActiveTab] = useState<'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout'>('catalog');
+  const [checkoutVehicle, setCheckoutVehicle] = useState<Vehicle | null>(null);
+
+  const startCheckout = (vehicle: Vehicle) => {
+    setCheckoutVehicle(vehicle);
+    setActiveTab('checkout');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Pagination State for Dedicated Inventory Page
   const [displayLimit, setDisplayLimit] = useState<number>(ITEMS_PER_PAGE);
@@ -375,7 +383,7 @@ export function App() {
                     key={vehicle.id}
                     vehicle={vehicle}
                     user={user}
-                    onSelectPurchase={(v) => setSelectedPurchaseVehicle(v)}
+                    onSelectPurchase={(v) => startCheckout(v)}
                     onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
                     onDelete={(id) => handleDeleteVehicle(id)}
                     onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
@@ -497,7 +505,7 @@ export function App() {
                       key={vehicle.id}
                       vehicle={vehicle}
                       user={user}
-                      onSelectPurchase={(v) => setSelectedPurchaseVehicle(v)}
+                      onSelectPurchase={(v) => startCheckout(v)}
                       onEdit={(v) => setAdminModalState({ isOpen: true, mode: 'EDIT', vehicle: v })}
                       onDelete={(id) => handleDeleteVehicle(id)}
                       onRestock={(v) => setAdminModalState({ isOpen: true, mode: 'RESTOCK', vehicle: v })}
@@ -836,6 +844,17 @@ export function App() {
             </div>
           </div>
         </main>
+      )}
+
+      {/* VIEW 6: DEDICATED FULL CHECKOUT PAGE */}
+      {activeTab === 'checkout' && checkoutVehicle && (
+        <CheckoutPage
+          vehicle={checkoutVehicle}
+          user={user}
+          onBack={() => setActiveTab('inventory')}
+          onConfirmPurchase={handleConfirmPurchase}
+          onOpenAuth={() => setShowAuthModal(true)}
+        />
       )}
 
       {/* Professional & Useful Footer */}

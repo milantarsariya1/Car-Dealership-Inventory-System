@@ -7,8 +7,8 @@ interface NavbarProps {
   onOpenAuth: () => void;
   onLogout: () => void;
   onOpenAddModal: () => void;
-  activeTab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile';
-  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile') => void;
+  activeTab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout';
+  setActiveTab: (tab: 'catalog' | 'inventory' | 'admin' | 'users' | 'profile' | 'checkout') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
