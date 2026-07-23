@@ -489,57 +489,57 @@ export function App() {
 
       {/* VIEW 2: DEDICATED FULL INVENTORY PAGE */}
       {activeTab === 'inventory' && (
-        <main className="relative flex-1 w-full px-6 lg:px-[120px] py-10 overflow-hidden min-h-screen">
-          {/* Background Video specifically for Inventory Section (Continuous 60fps Loop with Parallax Depth) */}
-          <div 
-            className="absolute inset-0 z-0 pointer-events-none transition-transform duration-75 ease-out"
-            style={{
-              transform: `translate3d(0, ${inventoryParallaxOffset}px, 0) scale(${inventoryParallaxScale})`,
-            }}
-          >
+        <main className="flex-1 w-full min-h-screen bg-[#0b0914] selection:bg-[#7b39fc] selection:text-white">
+          
+          {/* Top Video Hero Banner Section (Like Home Page) */}
+          <section className="relative w-full h-[420px] md:h-[480px] flex flex-col items-center justify-center overflow-hidden bg-[#0f172a] font-manrope">
+            {/* Background Video */}
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover opacity-75 min-h-full"
+              className="absolute inset-0 w-full h-full object-cover z-0"
             >
               <source
                 src="https://assets.mixkit.co/videos/74/74-720.mp4"
                 type="video/mp4"
               />
             </video>
-            <div className="absolute inset-0 bg-[#0b0914]/50 backdrop-blur-[1px]" />
-          </div>
+            {/* Dark Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0b0914] z-1" />
 
-          {/* Content Container (z-10) */}
-          <div className="relative z-10 w-full space-y-8">
-            
-            {/* Dedicated Page Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-manrope border-b border-[#a484d7]/20 pb-6">
-              <div>
+            {/* Banner Header Content */}
+            <div className="relative z-10 flex flex-col items-center text-center max-w-[900px] px-6 mt-6">
+              
+              {/* Back to Home Button & Live Counter */}
+              <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={() => setActiveTab('catalog')}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#a484d7] hover:text-white mb-2 font-cabin transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#a484d7] hover:text-white bg-[#2b2344]/80 backdrop-blur-md px-4 py-2 rounded-full border border-[#a484d7]/30 font-cabin transition-all hover:bg-[#7b39fc]"
                 >
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ArrowLeft className="w-4 h-4" />
                   <span>Back to Home</span>
                 </button>
-                <h2 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
-                  Full Dealership Fleet Inventory
-                </h2>
-                <p className="text-xs text-white/60 font-inter mt-1">
-                  Explore certified vehicles, filter by category & price range, or place atomic purchase orders.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold px-4 py-2 rounded-full bg-[#2b2344] text-[#a484d7] border border-[#a484d7]/30 font-cabin">
+                <span className="text-xs font-bold px-4 py-2 rounded-full bg-[#7b39fc]/20 backdrop-blur-md text-emerald-400 border border-emerald-500/30 font-cabin uppercase tracking-wider">
                   {filteredVehicles.length} Total Vehicles Available
                 </span>
               </div>
-            </div>
 
+              {/* Best Styled Website Name + Inventory Title */}
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight mb-4 drop-shadow-2xl">
+                <span className="gradient-text font-instrument italic font-normal pr-2">ApexMotors</span> Inventory
+              </h1>
+
+              {/* Catchy Subtitle Subtext */}
+              <p className="font-inter text-sm md:text-base text-white/80 max-w-[680px] leading-relaxed">
+                Explore handpicked luxury sedans, electric vehicles, sports coupes, and rugged 4x4 trucks. Filter by category, price, or place atomic purchase orders in real time.
+              </p>
+            </div>
+          </section>
+
+          {/* Main Inventory Controls & Grid Section (Below Video Banner) */}
+          <section className="w-full px-6 lg:px-[120px] py-12 space-y-8">
             {/* Inventory Statistics Bar */}
             <StatsBar vehicles={vehicles} />
 
@@ -607,7 +607,7 @@ export function App() {
                 )}
               </>
             )}
-          </div>
+          </section>
         </main>
       )}
 
