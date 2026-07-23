@@ -17,11 +17,11 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
         className="absolute inset-0 w-full h-full object-cover min-h-screen z-0"
       >
         <source
-          src="https://cdn.coverr.co/videos/coverr-a-black-sports-car-on-a-road-5444/1080p.mp4"
+          src="https://assets.mixkit.co/videos/74/74-720.mp4"
           type="video/mp4"
         />
         <source
-          src="https://cdn.coverr.co/videos/coverr-driving-a-car-at-night-5464/1080p.mp4"
+          src="https://cdn.coverr.co/videos/coverr-a-black-sports-car-on-a-road-5444/1080p.mp4"
           type="video/mp4"
         />
         Your browser does not support the video tag.
