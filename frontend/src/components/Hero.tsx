@@ -30,16 +30,6 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
       {/* Centered Hero Content Container */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-[900px] px-6 mt-32 mb-16">
         
-        {/* Tagline Pill */}
-        <div className="inline-flex items-center h-[38px] px-3.5 rounded-[10px] bg-[rgba(85,80,110,0.4)] backdrop-blur-md border border-[rgba(164,132,215,0.5)] mb-8">
-          <span className="bg-[#7b39fc] text-white text-[12px] font-cabin font-semibold px-2 py-0.5 rounded-[6px] mr-2">
-            New
-          </span>
-          <span className="text-white font-cabin font-medium text-[14px]">
-            Say Hello to Datacore v3.2
-          </span>
-        </div>
-
         {/* Headline */}
         <h1 className="font-instrument text-white text-5xl md:text-7xl lg:text-[96px] leading-[1.1] tracking-tight mb-6">
           Drive your dream vehicle instantly <span className="italic font-normal px-1">and</span> hassle-free
