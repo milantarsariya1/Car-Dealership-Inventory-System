@@ -506,8 +506,9 @@ export function App() {
                 type="video/mp4"
               />
             </video>
-            {/* Dark Vignette Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0b0914] z-1" />
+            {/* Dark Vignette & Smooth Bottom Edge Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#0b0914] z-1" />
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0b0914] via-[#0b0914]/85 to-transparent pointer-events-none z-1" />
 
             {/* Banner Header Content */}
             <div className="relative z-10 flex flex-col items-center text-center max-w-[900px] px-6 mt-6">

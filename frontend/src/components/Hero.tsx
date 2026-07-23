@@ -46,8 +46,9 @@ export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) 
           />
           Your browser does not support the video tag.
         </video>
-        {/* Subtle Dark Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#0b0914]" />
+        {/* Subtle Dark Vignette & Ultra-Smooth Bottom Edge Fade Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[#0b0914]" />
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0b0914] via-[#0b0914]/80 to-transparent pointer-events-none z-1" />
       </div>
 
       {/* Centered Hero Content Container */}
