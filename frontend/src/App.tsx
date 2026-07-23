@@ -75,6 +75,10 @@ export function App() {
   const [checkoutVehicle, setCheckoutVehicle] = useState<Vehicle | null>(null);
 
   const startCheckout = (vehicle: Vehicle) => {
+    if (user?.role === 'ADMIN') {
+      showNotification('error', 'Admin accounts are dealership managers. Only customer accounts can place purchase orders.');
+      return;
+    }
     setCheckoutVehicle(vehicle);
     setActiveTab('checkout');
     window.scrollTo({ top: 0, behavior: 'smooth' });

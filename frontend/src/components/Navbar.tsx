@@ -59,12 +59,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             Inventory
           </button>
 
-          {user && (
+          {/* Customer Orders link for Users / Admin */}
+          {user && user.role !== 'ADMIN' && (
             <button
               onClick={() => setActiveTab('orders')}
               className={`hover:opacity-80 transition-opacity ${activeTab === 'orders' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
             >
               My Orders
+            </button>
+          )}
+
+          {user?.role === 'ADMIN' && (
+            <button
+              onClick={() => setActiveTab('admin')}
+              className={`hover:opacity-80 transition-opacity ${activeTab === 'admin' ? 'opacity-100 font-semibold underline underline-offset-4 decoration-[#7b39fc]' : 'opacity-90'}`}
+            >
+              Customer Orders (Admin)
             </button>
           )}
 
@@ -83,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {servicesDropdownOpen && (
-              <div className="absolute top-full right-0 mt-2 w-52 bg-[#2b2344] border border-[#a484d7]/30 rounded-lg shadow-xl py-2 z-50">
+              <div className="absolute top-full right-0 mt-2 w-56 bg-[#2b2344] border border-[#a484d7]/30 rounded-lg shadow-xl py-2 z-50">
                 <button
                   onClick={() => { setActiveTab('inventory'); setServicesDropdownOpen(false); }}
                   className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
@@ -91,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <CarFront className="w-3.5 h-3.5 text-[#a484d7]" />
                   Full Fleet Inventory
                 </button>
-                {user && (
+                {user && user.role !== 'ADMIN' && (
                   <button
                     onClick={() => { setActiveTab('orders'); setServicesDropdownOpen(false); }}
                     className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
@@ -101,13 +111,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                 )}
                 {user?.role === 'ADMIN' && (
-                  <button
-                    onClick={() => { setActiveTab('admin'); setServicesDropdownOpen(false); }}
-                    className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
-                  >
-                    <LayoutDashboard className="w-3.5 h-3.5 text-[#a484d7]" />
-                    Admin Management
-                  </button>
+                  <>
+                    <button
+                      onClick={() => { setActiveTab('admin'); setServicesDropdownOpen(false); }}
+                      className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5 text-[#a484d7]" />
+                      Customer Pending Orders
+                    </button>
+                    <button
+                      onClick={() => { setActiveTab('admin'); setServicesDropdownOpen(false); }}
+                      className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#7b39fc]/30 transition-colors flex items-center gap-2"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      Admin Inventory Manager
+                    </button>
+                  </>
                 )}
               </div>
             )}

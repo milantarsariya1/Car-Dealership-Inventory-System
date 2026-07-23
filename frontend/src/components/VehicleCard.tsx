@@ -1,6 +1,6 @@
 import React from 'react';
 import { Vehicle, User } from '../types';
-import { ShoppingCart, Edit, Trash2, Plus, ShieldAlert } from 'lucide-react';
+import { ShoppingCart, Edit, Trash2, Plus, ShieldAlert, ShieldCheck } from 'lucide-react';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -102,19 +102,26 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
             </span>
           </div>
 
-          {/* User Purchase Button (DISABLED when quantity === 0) */}
-          <button
-            onClick={() => onSelectPurchase(vehicle)}
-            disabled={isOutOfStock}
-            className={`flex items-center gap-1.5 px-5 py-2.5 rounded-[10px] font-cabin font-medium text-[14px] transition-all shadow-md ${
-              isOutOfStock
-                ? 'bg-[#2b2344] text-white/40 cursor-not-allowed border border-white/10 shadow-none'
-                : 'bg-[#7b39fc] hover:bg-[#6826e3] text-white shadow-purple-500/20 hover:scale-[1.03] active:scale-[0.97] cursor-pointer'
-            }`}
-          >
-            <ShoppingCart className="w-4 h-4" />
-            {isOutOfStock ? 'OUT OF STOCK' : 'Purchase'}
-          </button>
+          {/* User Purchase Button for Customers OR Admin Manager Badge */}
+          {user?.role === 'ADMIN' ? (
+            <span className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] bg-emerald-950/60 text-emerald-300 border border-emerald-700/50 font-cabin font-bold text-xs">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              Dealer Seller
+            </span>
+          ) : (
+            <button
+              onClick={() => onSelectPurchase(vehicle)}
+              disabled={isOutOfStock}
+              className={`flex items-center gap-1.5 px-5 py-2.5 rounded-[10px] font-cabin font-medium text-[14px] transition-all shadow-md ${
+                isOutOfStock
+                  ? 'bg-[#2b2344] text-white/40 cursor-not-allowed border border-white/10 shadow-none'
+                  : 'bg-[#7b39fc] hover:bg-[#6826e3] text-white shadow-purple-500/20 hover:scale-[1.03] active:scale-[0.97] cursor-pointer'
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {isOutOfStock ? 'OUT OF STOCK' : 'Purchase'}
+            </button>
+          )}
         </div>
 
         {/* Admin Quick Action Toolbar */}
