@@ -11,7 +11,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square&logo=vercel" alt="Status" />
-  <img src="https://img.shields.io/badge/Tests-100%25%20Passing-success?style=flat-square&logo=jest" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-24%2F24%20Passing-success?style=flat-square&logo=jest" alt="Tests" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react" alt="React" />
   <img src="https://img.shields.io/badge/Database-Neon%20PostgreSQL-336791?style=flat-square&logo=postgresql" alt="PostgreSQL" />
@@ -158,6 +158,11 @@ cd Car-Dealership-Inventory-System
 # 2. Backend Setup
 cd backend
 npm install
+
+# Configure environment — the server refuses to start without JWT_SECRET
+cp .env.example .env
+# Edit .env: set DATABASE_URL (PostgreSQL) and a strong JWT_SECRET
+
 npx prisma db push
 npm run seed
 npm test
@@ -174,48 +179,83 @@ npm run dev
 
 ---
 
+## 🧭 Design Decisions & Deviations from the Spec
+
+Conscious deviations from the kata specification, and why:
+
+| Decision | Spec says | We chose | Why |
+| :--- | :--- | :--- | :--- |
+| Public vehicle browsing | `GET /api/vehicles` & `/search` listed under *Protected* | Public | A dealership storefront must be browsable before sign-up; write operations remain protected |
+| Create/Update restricted to Admin | Protected (any authenticated user) | Admin only | Regular customers should not be able to alter dealership inventory |
+| Purchase blocked for Admin | Not specified | `USER` role only (enforced server-side) | The admin is the dealership seller, not a buyer |
+| Registration forces `USER` role | Not specified | Single pre-seeded admin only | Prevents privilege escalation via the public registration endpoint |
+| `prisma db push` instead of migrations | Not specified | `db push` for kata simplicity | Trade-off: faster iteration; production systems should use versioned migrations |
+
+**Known limitations (deliberate scope cuts):** vehicle `price` uses `Float` (a production system should use `Decimal`/integer paise); dispatch tracking status is simulated from order age rather than persisted.
+
+---
+
 ## 🧪 Test Execution Report (TDD Suite)
 
 > [!IMPORTANT]
-> All unit and integration test suites passed cleanly with **100% success rate**.
+> All **24** unit and integration tests across **4** test suites pass. Output below is from a real run against a throwaway local PostgreSQL container. Full reports (including coverage) live in [`docs/test-report/`](./docs/test-report/), and the suite runs automatically in CI on every push ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).
+>
+> The frontend additionally has 4 Vitest component tests covering the out-of-stock purchase button guard (`cd frontend && npm test`).
 
 ```text
 PASS tests/inventory.test.ts
   Inventory Transactions - Purchase & Restock
     POST /api/vehicles/:id/purchase
-      ✓ should deduct stock quantity when a user purchases a vehicle
-      ✓ should prevent purchase when stock quantity reaches 0
+      ✓ should deduct stock quantity when a user purchases a vehicle (21 ms)
+      ✓ should prevent purchase when stock quantity reaches 0 (27 ms)
     POST /api/vehicles/:id/restock (Admin Only)
-      ✓ should increase vehicle stock quantity when ADMIN restocks
-      ✓ should reject restock request from non-admin user (403 Forbidden)
+      ✓ should increase vehicle stock quantity when ADMIN restocks (17 ms)
+      ✓ should reject restock request from non-admin user (403 Forbidden) (7 ms)
+    Purchase authorization & concurrency safety
+      ✓ should reject purchase attempts from ADMIN accounts (403 Forbidden) (5 ms)
+      ✓ should reject purchase with a non-integer or non-positive quantity (5 ms)
+      ✓ should never oversell when two concurrent purchases race for the last unit (30 ms)
 
 PASS tests/vehicles.test.ts
   Vehicle Inventory Endpoints (/api/vehicles)
     POST /api/vehicles (Admin Only)
-      ✓ should allow ADMIN to add a new vehicle
-      ✓ should reject vehicle creation from non-admin user (403 Forbidden)
+      ✓ should allow ADMIN to add a new vehicle (13 ms)
+      ✓ should reject vehicle creation from non-admin user (403 Forbidden) (5 ms)
+      ✓ should reject vehicle creation with a negative price (4 ms)
+      ✓ should reject vehicle creation with a negative or fractional quantity (6 ms)
     GET /api/vehicles & /api/vehicles/search
-      ✓ should return list of vehicles
-      ✓ should filter vehicles by search query and category
+      ✓ should return list of vehicles (9 ms)
+      ✓ should filter vehicles by search query and category (10 ms)
     PUT /api/vehicles/:id & DELETE /api/vehicles/:id
-      ✓ should allow ADMIN to update vehicle price and quantity
-      ✓ should allow ADMIN to delete a vehicle
+      ✓ should allow ADMIN to update vehicle price and quantity (10 ms)
+      ✓ should allow ADMIN to delete a vehicle (8 ms)
 
 PASS tests/auth.test.ts
   Auth Endpoints (/api/auth)
     POST /api/auth/register
-      ✓ should register a new user successfully and return user details (excluding password)
-      ✓ should reject registration if email is already registered
-      ✓ should reject registration if required fields are missing
+      ✓ should register a new user successfully and return user details (excluding password) (87 ms)
+      ✓ should reject registration if email is already registered (9 ms)
+      ✓ should reject registration if required fields are missing (4 ms)
+      ✓ should reject registration with an invalid email format (6 ms)
+      ✓ should reject registration with a password shorter than 6 characters (4 ms)
     POST /api/auth/login
-      ✓ should authenticate user with valid credentials and return JWT token
-      ✓ should reject login with incorrect password
+      ✓ should authenticate user with valid credentials and return JWT token (75 ms)
+      ✓ should reject login with incorrect password (76 ms)
 
-Test Suites: 3 passed, 3 total
-Tests:       15 passed, 15 total
+PASS tests/app.test.ts
+  Application-level routes
+    ✓ GET /api/health should return ok status (8 ms)
+    ✓ should return a JSON 404 for unknown routes (5 ms)
+
+Test Suites: 4 passed, 4 total
+Tests:       24 passed, 24 total
 Snapshots:   0 total
-Time:        15.42 s
+Time:        2.032 s, estimated 3 s
+Ran all test suites.
 ```
+
+> [!WARNING]
+> Running `npm test` executes against the database configured in `DATABASE_URL`. Use a dedicated local/test database — never point tests at a shared or production database.
 
 ---
 

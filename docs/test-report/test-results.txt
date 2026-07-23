@@ -1,0 +1,53 @@
+
+> backend@1.0.0 test
+> jest --runInBand --detectOpenHandles --forceExit
+
+PASS tests/inventory.test.ts
+  Inventory Transactions - Purchase & Restock
+    POST /api/vehicles/:id/purchase
+      ✓ should deduct stock quantity when a user purchases a vehicle (21 ms)
+      ✓ should prevent purchase when stock quantity reaches 0 (27 ms)
+    POST /api/vehicles/:id/restock (Admin Only)
+      ✓ should increase vehicle stock quantity when ADMIN restocks (17 ms)
+      ✓ should reject restock request from non-admin user (403 Forbidden) (7 ms)
+    Purchase authorization & concurrency safety
+      ✓ should reject purchase attempts from ADMIN accounts (403 Forbidden) (5 ms)
+      ✓ should reject purchase with a non-integer or non-positive quantity (5 ms)
+      ✓ should never oversell when two concurrent purchases race for the last unit (30 ms)
+
+PASS tests/vehicles.test.ts
+  Vehicle Inventory Endpoints (/api/vehicles)
+    POST /api/vehicles (Admin Only)
+      ✓ should allow ADMIN to add a new vehicle (13 ms)
+      ✓ should reject vehicle creation from non-admin user (403 Forbidden) (5 ms)
+      ✓ should reject vehicle creation with a negative price (4 ms)
+      ✓ should reject vehicle creation with a negative or fractional quantity (6 ms)
+    GET /api/vehicles & /api/vehicles/search
+      ✓ should return list of vehicles (9 ms)
+      ✓ should filter vehicles by search query and category (10 ms)
+    PUT /api/vehicles/:id & DELETE /api/vehicles/:id
+      ✓ should allow ADMIN to update vehicle price and quantity (10 ms)
+      ✓ should allow ADMIN to delete a vehicle (8 ms)
+
+PASS tests/auth.test.ts
+  Auth Endpoints (/api/auth)
+    POST /api/auth/register
+      ✓ should register a new user successfully and return user details (excluding password) (87 ms)
+      ✓ should reject registration if email is already registered (9 ms)
+      ✓ should reject registration if required fields are missing (4 ms)
+      ✓ should reject registration with an invalid email format (6 ms)
+      ✓ should reject registration with a password shorter than 6 characters (4 ms)
+    POST /api/auth/login
+      ✓ should authenticate user with valid credentials and return JWT token (75 ms)
+      ✓ should reject login with incorrect password (76 ms)
+
+PASS tests/app.test.ts
+  Application-level routes
+    ✓ GET /api/health should return ok status (8 ms)
+    ✓ should return a JSON 404 for unknown routes (5 ms)
+
+Test Suites: 4 passed, 4 total
+Tests:       24 passed, 24 total
+Snapshots:   0 total
+Time:        2.032 s, estimated 3 s
+Ran all test suites.
