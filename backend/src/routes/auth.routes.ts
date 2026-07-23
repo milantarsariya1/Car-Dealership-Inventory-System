@@ -8,5 +8,6 @@ const router = Router();
 router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);
 router.get('/users', authenticateToken, requireRole([Role.ADMIN]), AuthController.getAllUsers);
+router.put('/profile', authenticateToken, AuthController.updateProfile);
 
 export default router;

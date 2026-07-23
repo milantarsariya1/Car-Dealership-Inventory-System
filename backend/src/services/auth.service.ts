@@ -105,4 +105,45 @@ export class AuthService {
     });
     return users;
   }
+
+  static async updateProfile(userId: string, data: { name?: string; email?: string; password?: string }) {
+    const userExists = await prisma.user.findUnique({ where: { id: userId } });
+    if (!userExists) {
+      throw new AppError('User not found', 404);
+    }
+
+    const updateData: any = {};
+
+    if (data.name) {
+      updateData.name = data.name;
+    }
+
+    if (data.email && data.email !== userExists.email) {
+      const emailTaken = await prisma.user.findUnique({ where: { email: data.email } });
+      if (emailTaken) {
+        throw new AppError('Email is already taken by another account', 400);
+      }
+      updateData.email = data.email;
+    }
+
+    if (data.password && data.password.trim().length > 0) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(data.password, salt);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return updatedUser;
+  }
 }

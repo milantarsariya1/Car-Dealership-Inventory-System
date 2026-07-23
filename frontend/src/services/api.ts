@@ -40,6 +40,15 @@ export class ApiService {
     return res.json();
   }
 
+  static async updateProfile(data: { name?: string; email?: string; password?: string }): Promise<ApiResponse<User>> {
+    const res = await fetch(`${API_BASE}/auth/profile`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  }
+
   // Vehicles API
   static async getAllVehicles(): Promise<ApiResponse<Vehicle[]>> {
     const res = await fetch(`${API_BASE}/vehicles`, {

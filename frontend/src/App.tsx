@@ -10,7 +10,7 @@ import { Footer } from './components/Footer';
 import { PurchaseModal } from './components/PurchaseModal';
 import { AdminModal } from './components/AdminModal';
 import { AuthModal } from './components/AuthModal';
-import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles, Users, User as UserIcon } from 'lucide-react';
+import { Car, AlertCircle, CheckCircle2, ShieldCheck, PlusCircle, ArrowRight, ArrowLeft, Sparkles, Users, User as UserIcon, Edit3, Save, X } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -20,6 +20,13 @@ export function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [usersLoading, setUsersLoading] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
+
+  // Profile Edit State
+  const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
+  const [editName, setEditName] = useState<string>('');
+  const [editEmail, setEditEmail] = useState<string>('');
+  const [editPassword, setEditPassword] = useState<string>('');
+  const [profileSaving, setProfileSaving] = useState<boolean>(false);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -85,6 +92,44 @@ export function App() {
       showNotification('error', 'Failed to fetch user database.');
     } finally {
       setUsersLoading(false);
+    }
+  };
+
+  const handleStartEditProfile = () => {
+    if (user) {
+      setEditName(user.name);
+      setEditEmail(user.email);
+      setEditPassword('');
+      setIsEditingProfile(true);
+    }
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editName.trim() || !editEmail.trim()) {
+      showNotification('error', 'Name and email are required.');
+      return;
+    }
+    setProfileSaving(true);
+    try {
+      const res = await ApiService.updateProfile({
+        name: editName,
+        email: editEmail,
+        password: editPassword.trim() ? editPassword : undefined,
+      });
+      if (res.success && res.data) {
+        setUser(res.data);
+        localStorage.setItem('user', JSON.stringify(res.data));
+        setIsEditingProfile(false);
+        setEditPassword('');
+        showNotification('success', 'Profile updated successfully!');
+      } else {
+        showNotification('error', res.error || 'Failed to update profile.');
+      }
+    } catch (err) {
+      showNotification('error', 'Failed to update profile.');
+    } finally {
+      setProfileSaving(false);
     }
   };
 
@@ -608,10 +653,10 @@ export function App() {
       {activeTab === 'profile' && user && (
         <main className="flex-1 w-full px-6 lg:px-[120px] py-10 min-h-screen">
           <div className="max-w-2xl mx-auto glass-panel p-8 rounded-[20px] border border-[#a484d7]/20 bg-[#1c1634]/70 font-manrope">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-start justify-between mb-8">
               <div>
                 <button
-                  onClick={() => setActiveTab('catalog')}
+                  onClick={() => { setActiveTab('catalog'); setIsEditingProfile(false); }}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-[#a484d7] hover:text-white mb-3 font-cabin transition-colors"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
@@ -623,6 +668,24 @@ export function App() {
                 </h3>
                 <p className="text-sm text-white/60 font-inter mt-1">Manage your personal details and account preferences.</p>
               </div>
+
+              {!isEditingProfile ? (
+                <button
+                  onClick={handleStartEditProfile}
+                  className="px-4 py-2 bg-[#7b39fc] hover:bg-[#6826e3] text-white font-bold text-xs uppercase tracking-wider rounded-[8px] flex items-center gap-2 transition-colors shadow-md"
+                >
+                  <Edit3 className="w-4 h-4" />
+                  Edit Profile
+                </button>
+              ) : (
+                <button
+                  onClick={() => setIsEditingProfile(false)}
+                  className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white/80 font-bold text-xs uppercase tracking-wider rounded-[8px] flex items-center gap-1.5 transition-colors border border-white/20"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  Cancel
+                </button>
+              )}
             </div>
 
             <div className="space-y-6">
@@ -647,28 +710,85 @@ export function App() {
                 </div>
               </div>
 
-              <div className="bg-[#130e26]/50 rounded-xl p-5 border border-[#a484d7]/10 space-y-4">
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Full Name</label>
-                  <div className="text-white font-medium text-sm mt-1">{user.name}</div>
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Email Address</label>
-                  <div className="text-white font-mono text-sm mt-1">{user.email}</div>
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Password</label>
-                  <div className="text-white font-mono text-sm mt-1 tracking-[0.2em]">********</div>
-                </div>
-                {user.createdAt && (
+              {!isEditingProfile ? (
+                /* READ-ONLY VIEW */
+                <div className="bg-[#130e26]/50 rounded-xl p-5 border border-[#a484d7]/10 space-y-4">
                   <div>
-                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Joined Date</label>
-                    <div className="text-white font-mono text-sm mt-1 text-white/80">
-                      {new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </div>
+                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Full Name</label>
+                    <div className="text-white font-medium text-sm mt-1">{user.name}</div>
                   </div>
-                )}
-              </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Email Address</label>
+                    <div className="text-white font-mono text-sm mt-1">{user.email}</div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Password</label>
+                    <div className="text-white font-mono text-sm mt-1 tracking-[0.2em]">********</div>
+                  </div>
+                  {user.createdAt && (
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Joined Date</label>
+                      <div className="text-white font-mono text-sm mt-1 text-white/80">
+                        {new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* EDIT FORM VIEW */
+                <form onSubmit={handleSaveProfile} className="bg-[#130e26]/80 rounded-xl p-6 border border-[#a484d7]/30 space-y-5">
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">Full Name</label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white font-medium text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">Email Address</label>
+                    <input
+                      type="email"
+                      value={editEmail}
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-[#a484d7] tracking-wider block mb-1.5">
+                      New Password <span className="text-white/40 font-normal lowercase">(leave blank to keep current)</span>
+                    </label>
+                    <input
+                      type="password"
+                      value={editPassword}
+                      onChange={(e) => setEditPassword(e.target.value)}
+                      placeholder="Enter new password"
+                      className="w-full px-4 py-2.5 bg-[#1c1634] border border-[#a484d7]/40 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-[#7b39fc] transition-colors"
+                    />
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-end space-x-3 border-t border-[#a484d7]/20">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingProfile(false)}
+                      className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white/80 font-bold text-xs uppercase tracking-wider rounded-lg transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={profileSaving}
+                      className="px-5 py-2 bg-[#7b39fc] hover:bg-[#6826e3] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-2 transition-colors shadow-md disabled:opacity-50"
+                    >
+                      <Save className="w-4 h-4" />
+                      {profileSaving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </main>

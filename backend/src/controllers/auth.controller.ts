@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 export class AuthController {
   static async register(req: Request, res: Response, next: NextFunction) {
@@ -33,6 +34,22 @@ export class AuthController {
       res.status(200).json({
         success: true,
         data: users,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateProfile(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ success: false, error: 'Unauthorized' });
+      }
+      const updatedUser = await AuthService.updateProfile(userId, req.body);
+      res.status(200).json({
+        success: true,
+        data: updatedUser,
       });
     } catch (error) {
       next(error);
