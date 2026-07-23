@@ -1,6 +1,6 @@
 import React from 'react';
 import { Vehicle, User } from '../types';
-import { ShoppingCart, Edit, Trash2, Plus, Zap, ShieldAlert } from 'lucide-react';
+import { ShoppingCart, Edit, Trash2, Plus, ShieldAlert } from 'lucide-react';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -12,12 +12,12 @@ interface VehicleCardProps {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  EV: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-  HYBRID: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  SEDAN: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  SUV: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
-  COUPE: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  TRUCK: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
+  EV: 'bg-[#7b39fc]/20 text-[#a484d7] border-[#7b39fc]/40',
+  HYBRID: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  SEDAN: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+  SUV: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30',
+  COUPE: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+  TRUCK: 'bg-orange-500/15 text-orange-300 border-orange-500/30',
 };
 
 export const VehicleCard: React.FC<VehicleCardProps> = ({
@@ -31,9 +31,9 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   const isOutOfStock = vehicle.quantity === 0;
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+    <div className="glass-card rounded-[18px] overflow-hidden flex flex-col justify-between group bg-[#19142d]/80 border border-[#a484d7]/20 hover:border-[#7b39fc]/60 transition-all font-manrope">
       {/* Vehicle Image Container */}
-      <div className="relative h-48 w-full bg-slate-900 overflow-hidden">
+      <div className="relative h-52 w-full bg-[#110d22] overflow-hidden">
         <img
           src={vehicle.imageUrl || 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd'}
           alt={`${vehicle.make} ${vehicle.model}`}
@@ -43,13 +43,13 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
               'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd';
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0b0914] via-transparent to-transparent opacity-90" />
 
         {/* Category Pill Badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 font-cabin">
           <span
-            className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${
-              CATEGORY_COLORS[vehicle.category] || 'bg-slate-800 text-slate-300 border-slate-700'
+            className={`text-[11px] font-bold px-2.5 py-1 rounded-[6px] border ${
+              CATEGORY_COLORS[vehicle.category] || 'bg-[#2b2344] text-white/80 border-[#a484d7]/30'
             }`}
           >
             {vehicle.category}
@@ -57,14 +57,14 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
         </div>
 
         {/* Stock Badge */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 font-cabin">
           {isOutOfStock ? (
-            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 backdrop-blur-md flex items-center gap-1">
+            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-[6px] bg-rose-500/20 text-rose-400 border border-rose-500/40 backdrop-blur-md flex items-center gap-1">
               <ShieldAlert className="w-3 h-3" />
               OUT OF STOCK
             </span>
           ) : (
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 backdrop-blur-md">
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-[6px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 backdrop-blur-md">
               {vehicle.quantity} IN STOCK
             </span>
           )}
@@ -72,7 +72,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
         {/* VIN Tag */}
         <div className="absolute bottom-2 left-3">
-          <span className="text-[10px] font-mono text-slate-400 bg-slate-950/80 px-2 py-0.5 rounded border border-slate-800">
+          <span className="text-[10px] font-mono text-white/50 bg-[#0b0914]/90 px-2 py-0.5 rounded-[4px] border border-[#a484d7]/20">
             VIN: {vehicle.vin}
           </span>
         </div>
@@ -82,22 +82,22 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div>
           <div className="flex items-baseline justify-between">
-            <h3 className="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">
+            <h3 className="font-extrabold text-xl text-white group-hover:text-[#a484d7] transition-colors tracking-tight">
               {vehicle.make} {vehicle.model}
             </h3>
           </div>
-          <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+          <p className="text-xs text-white/60 mt-1.5 line-clamp-2 leading-relaxed font-inter">
             {vehicle.description || 'Premium dealership vehicle ready for immediate delivery.'}
           </p>
         </div>
 
         {/* Price & Purchase Action */}
-        <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+        <div className="pt-3.5 border-t border-[#a484d7]/15 flex items-center justify-between">
           <div>
-            <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">
-              Price Tag
+            <span className="text-[10px] text-white/50 uppercase font-bold tracking-wider block font-cabin">
+              Price
             </span>
-            <span className="text-xl font-extrabold text-white">
+            <span className="text-2xl font-bold text-white font-manrope">
               ${vehicle.price.toLocaleString()}
             </span>
           </div>
@@ -106,27 +106,27 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           <button
             onClick={() => onSelectPurchase(vehicle)}
             disabled={isOutOfStock}
-            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-semibold text-xs transition-all shadow-md ${
+            className={`flex items-center gap-1.5 px-5 py-2.5 rounded-[10px] font-cabin font-medium text-[14px] transition-all shadow-md ${
               isOutOfStock
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50 shadow-none'
-                : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-cyan-500/20 hover:scale-105 active:scale-95 cursor-pointer'
+                ? 'bg-[#2b2344] text-white/40 cursor-not-allowed border border-white/10 shadow-none'
+                : 'bg-[#7b39fc] hover:bg-[#6826e3] text-white shadow-purple-500/20 hover:scale-[1.03] active:scale-[0.97] cursor-pointer'
             }`}
           >
-            <ShoppingCart className="w-3.5 h-3.5" />
+            <ShoppingCart className="w-4 h-4" />
             {isOutOfStock ? 'OUT OF STOCK' : 'Purchase'}
           </button>
         </div>
 
         {/* Admin Quick Action Toolbar */}
         {user?.role === 'ADMIN' && (
-          <div className="pt-2 border-t border-slate-800/50 flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-medium">Admin Actions:</span>
+          <div className="pt-2 border-t border-[#a484d7]/15 flex items-center justify-between text-xs font-cabin">
+            <span className="text-white/50 font-medium">Admin Options:</span>
             <div className="flex items-center space-x-1.5">
               {onRestock && (
                 <button
                   onClick={() => onRestock(vehicle)}
                   title="Restock Vehicle (+Stock)"
-                  className="p-1.5 bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 rounded-lg border border-emerald-800/50 transition-colors"
+                  className="p-1.5 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 rounded-[6px] border border-emerald-700/50 transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
@@ -135,7 +135,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
                 <button
                   onClick={() => onEdit(vehicle)}
                   title="Edit Vehicle Specs"
-                  className="p-1.5 bg-blue-950/40 hover:bg-blue-900/60 text-blue-400 rounded-lg border border-blue-800/50 transition-colors"
+                  className="p-1.5 bg-[#7b39fc]/20 hover:bg-[#7b39fc]/40 text-[#a484d7] rounded-[6px] border border-[#7b39fc]/50 transition-colors"
                 >
                   <Edit className="w-3.5 h-3.5" />
                 </button>
@@ -144,7 +144,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
                 <button
                   onClick={() => onDelete(vehicle.id)}
                   title="Delete Vehicle"
-                  className="p-1.5 bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 rounded-lg border border-rose-800/50 transition-colors"
+                  className="p-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-300 rounded-[6px] border border-rose-700/50 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

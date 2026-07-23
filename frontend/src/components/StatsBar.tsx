@@ -13,44 +13,44 @@ export const StatsBar: React.FC<StatsBarProps> = ({ vehicles }) => {
   const totalInventoryValue = vehicles.reduce((sum, v) => sum + v.price * v.quantity, 0);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div className="glass-card p-4 rounded-xl flex items-center space-x-3 border-l-4 border-l-blue-500">
-        <div className="p-2.5 rounded-lg bg-blue-500/10 text-blue-400">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 font-manrope">
+      <div className="glass-card p-4 rounded-[14px] flex items-center space-x-3.5 border-l-4 border-l-[#7b39fc] bg-[#1a142e]/60">
+        <div className="p-2.5 rounded-[10px] bg-[#7b39fc]/20 text-[#a484d7]">
           <Package className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">Total Vehicles</p>
-          <p className="text-xl font-bold text-white">{totalVehicles}</p>
+          <p className="text-xs text-white/60 font-medium font-cabin">Total Vehicles</p>
+          <p className="text-2xl font-bold text-white font-manrope">{totalVehicles}</p>
         </div>
       </div>
 
-      <div className="glass-card p-4 rounded-xl flex items-center space-x-3 border-l-4 border-l-emerald-500">
-        <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+      <div className="glass-card p-4 rounded-[14px] flex items-center space-x-3.5 border-l-4 border-l-emerald-500 bg-[#1a142e]/60">
+        <div className="p-2.5 rounded-[10px] bg-emerald-500/20 text-emerald-400">
           <CheckCircle2 className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">Available Models</p>
-          <p className="text-xl font-bold text-emerald-400">{inStockCount}</p>
+          <p className="text-xs text-white/60 font-medium font-cabin">Available Models</p>
+          <p className="text-2xl font-bold text-emerald-400 font-manrope">{inStockCount}</p>
         </div>
       </div>
 
-      <div className="glass-card p-4 rounded-xl flex items-center space-x-3 border-l-4 border-l-rose-500">
-        <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-400">
+      <div className="glass-card p-4 rounded-[14px] flex items-center space-x-3.5 border-l-4 border-l-rose-500 bg-[#1a142e]/60">
+        <div className="p-2.5 rounded-[10px] bg-rose-500/20 text-rose-400">
           <AlertTriangle className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">Out of Stock</p>
-          <p className="text-xl font-bold text-rose-400">{outOfStockCount}</p>
+          <p className="text-xs text-white/60 font-medium font-cabin">Out of Stock</p>
+          <p className="text-2xl font-bold text-rose-400 font-manrope">{outOfStockCount}</p>
         </div>
       </div>
 
-      <div className="glass-card p-4 rounded-xl flex items-center space-x-3 border-l-4 border-l-cyan-500">
-        <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-400">
+      <div className="glass-card p-4 rounded-[14px] flex items-center space-x-3.5 border-l-4 border-l-[#a484d7] bg-[#1a142e]/60">
+        <div className="p-2.5 rounded-[10px] bg-[#7b39fc]/20 text-[#a484d7]">
           <DollarSign className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">Total Inventory Value</p>
-          <p className="text-xl font-bold text-cyan-300">
+          <p className="text-xs text-white/60 font-medium font-cabin">Total Inventory Value</p>
+          <p className="text-2xl font-bold text-[#a484d7] font-manrope">
             ${totalInventoryValue.toLocaleString()}
           </p>
         </div>

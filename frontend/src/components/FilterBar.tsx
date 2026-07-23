@@ -1,6 +1,5 @@
 import React from 'react';
-import { Search, Filter, RefreshCw, SlidersHorizontal } from 'lucide-react';
-import { Category } from '../types';
+import { Search, RefreshCw, SlidersHorizontal } from 'lucide-react';
 
 interface FilterBarProps {
   searchQuery: string;
@@ -36,30 +35,30 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onReset,
 }) => {
   return (
-    <div className="glass-panel p-5 rounded-2xl mb-8 space-y-4">
+    <div className="glass-panel p-5 rounded-[16px] mb-8 space-y-4 font-manrope bg-[#1c1634]/70 border border-[#a484d7]/20">
       <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
         {/* Search Input */}
         <div className="relative w-full lg:w-96">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search make, model, or VIN..."
-            className="w-full bg-slate-900/90 border border-slate-800 text-slate-100 placeholder-slate-500 pl-10 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+            className="w-full bg-[#2b2344]/80 border border-[#a484d7]/30 text-white placeholder-white/40 pl-10 pr-4 py-2.5 rounded-[10px] text-sm focus:outline-none focus:border-[#7b39fc] focus:ring-1 focus:ring-[#7b39fc] transition-all font-inter"
           />
         </div>
 
         {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0 no-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0 no-scrollbar font-cabin">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setSelectedCategory(cat.value)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-4 py-2 rounded-[10px] text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === cat.value
-                  ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md shadow-cyan-500/20'
-                  : 'bg-slate-900/70 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800/80'
+                  ? 'bg-[#7b39fc] text-white shadow-md shadow-purple-500/25 border border-[#7b39fc]'
+                  : 'bg-[#2b2344]/60 text-white/70 hover:text-white hover:bg-[#2b2344] border border-[#a484d7]/20'
               }`}
             >
               {cat.label}
@@ -68,25 +67,25 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
 
         {/* Action controls: Sort & Reset */}
-        <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
-          <div className="flex items-center gap-2 bg-slate-900/90 px-3 py-2 rounded-xl border border-slate-800">
-            <SlidersHorizontal className="w-4 h-4 text-slate-400" />
+        <div className="flex items-center gap-3 w-full lg:w-auto justify-end font-cabin">
+          <div className="flex items-center gap-2 bg-[#2b2344]/80 px-3 py-2 rounded-[10px] border border-[#a484d7]/30">
+            <SlidersHorizontal className="w-4 h-4 text-white/50" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer"
+              className="bg-transparent text-white/90 text-xs font-medium focus:outline-none cursor-pointer"
             >
-              <option value="newest" className="bg-slate-900 text-slate-200">Newest Arrival</option>
-              <option value="price-asc" className="bg-slate-900 text-slate-200">Price: Low to High</option>
-              <option value="price-desc" className="bg-slate-900 text-slate-200">Price: High to Low</option>
-              <option value="stock-desc" className="bg-slate-900 text-slate-200">Highest Stock</option>
+              <option value="newest" className="bg-[#2b2344] text-white">Newest Arrival</option>
+              <option value="price-asc" className="bg-[#2b2344] text-white">Price: Low to High</option>
+              <option value="price-desc" className="bg-[#2b2344] text-white">Price: High to Low</option>
+              <option value="stock-desc" className="bg-[#2b2344] text-white">Highest Stock</option>
             </select>
           </div>
 
           <button
             onClick={onReset}
             title="Reset Filters"
-            className="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl border border-slate-800 transition-colors"
+            className="p-2.5 bg-[#2b2344]/80 hover:bg-[#392e5a] text-white/70 hover:text-white rounded-[10px] border border-[#a484d7]/30 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
@@ -94,9 +93,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* Price Slider Bar */}
-      <div className="pt-2 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="pt-3 border-t border-[#a484d7]/15 flex flex-col sm:flex-row items-center justify-between gap-4 font-manrope">
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <span className="text-xs text-slate-400 font-medium whitespace-nowrap">Max Price Filter:</span>
+          <span className="text-xs text-white/60 font-medium whitespace-nowrap">Max Price Filter:</span>
           <input
             type="range"
             min="10000"
@@ -104,13 +103,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             step="5000"
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
-            className="w-full sm:w-64 accent-cyan-500 cursor-pointer"
+            className="w-full sm:w-64 accent-[#7b39fc] cursor-pointer"
           />
-          <span className="text-xs font-bold text-cyan-400 min-w-[80px]">
+          <span className="text-xs font-bold text-[#a484d7] min-w-[80px]">
             ${maxPrice.toLocaleString()}
           </span>
         </div>
-        <p className="text-xs text-slate-500 hidden md:block">
+        <p className="text-xs text-white/40 hidden md:block">
           Showing real-time live stock inventory directly from database
         </p>
       </div>
