@@ -13,7 +13,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState<'USER' | 'ADMIN'>('USER');
+  // Role is always USER — admin is a fixed seeded account only
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +24,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
 
     try {
       if (tab === 'register') {
-        const res = await ApiService.register({ name, email, password, role });
+        const res = await ApiService.register({ name, email, password });
         if (!res.success) {
           throw new Error(res.error || 'Registration failed.');
         }
@@ -179,19 +179,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
             </div>
           </div>
 
-          {tab === 'register' && (
-            <div>
-              <label className="text-xs font-semibold text-white/80 block mb-1 font-cabin">Account Role</label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as 'USER' | 'ADMIN')}
-                className="w-full bg-[#2b2344] border border-[#a484d7]/30 text-white text-xs p-2.5 rounded-[10px] focus:border-[#7b39fc] focus:outline-none"
-              >
-                <option value="USER" className="bg-[#2b2344] text-white">Customer / Buyer (Default)</option>
-                <option value="ADMIN" className="bg-[#2b2344] text-white">Dealership Admin</option>
-              </select>
-            </div>
-          )}
+          {/* No role selection — all new accounts are Customer/Buyer by default.
+              ApexMotors has a single pre-configured admin account. */}
 
           <button
             type="submit"
