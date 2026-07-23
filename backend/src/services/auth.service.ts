@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/prisma';
+import { env } from '../config/env';
 import { AppError } from '../middleware/error.middleware';
 import { Role } from '@prisma/client';
 
@@ -89,10 +90,9 @@ export class AuthService {
       throw new AppError('Invalid credentials', 401);
     }
 
-    const secret = process.env.JWT_SECRET || 'car_dealership_super_secret_key_2026';
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
-      secret,
+      env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 

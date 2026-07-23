@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from './error.middleware';
+import { env } from '../config/env';
 import { Role } from '@prisma/client';
 
 export interface AuthenticatedRequest extends Request {
@@ -24,8 +25,7 @@ export const authenticateToken = (
   }
 
   try {
-    const secret = process.env.JWT_SECRET || 'car_dealership_super_secret_key_2026';
-    const decoded = jwt.verify(token, secret) as {
+    const decoded = jwt.verify(token, env.JWT_SECRET) as {
       id: string;
       email: string;
       role: Role;
