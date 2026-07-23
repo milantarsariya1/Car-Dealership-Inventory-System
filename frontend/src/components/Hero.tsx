@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface HeroProps {
   onPrimaryClick: () => void;
@@ -6,14 +6,63 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onPrimaryClick, onSecondaryClick }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const section = sectionRef.current;
+    if (!video || !section) return;
+
+    // Pause autoplay to allow scroll-driven video scrubbing
+    video.pause();
+
+    let animationFrameId: number;
+    let targetTime = 0;
+
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const sectionHeight = rect.height || window.innerHeight;
+      
+      // Calculate scroll progress through hero section
+      const scrollDistance = -rect.top;
+      const maxScroll = sectionHeight;
+      const progress = Math.max(0, Math.min(1, scrollDistance / maxScroll));
+
+      if (video.duration && !isNaN(video.duration)) {
+        targetTime = progress * video.duration;
+      }
+    };
+
+    const updateVideoTime = () => {
+      if (video && video.duration && !isNaN(video.duration)) {
+        // Smooth linear interpolation (lerp) for liquid-smooth frame scrubbing
+        const diff = targetTime - video.currentTime;
+        if (Math.abs(diff) > 0.01) {
+          video.currentTime += diff * 0.2;
+        }
+      }
+      animationFrameId = requestAnimationFrame(updateVideoTime);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    animationFrameId = requestAnimationFrame(updateVideoTime);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   return (
-    <section className="relative w-full min-h-screen flex flex-col items-center justify-start overflow-hidden bg-[#0f172a]">
-      {/* Full-screen Opaque HTML5 Video Background - Luxury Sports Car Video */}
+    <section ref={sectionRef} className="relative w-full min-h-screen flex flex-col items-center justify-start overflow-hidden bg-[#0f172a]">
+      {/* Full-screen Scroll-Scrubbed HTML5 Video Background */}
       <video
-        autoPlay
-        loop
+        ref={videoRef}
         muted
         playsInline
+        preload="auto"
         className="absolute inset-0 w-full h-full object-cover min-h-screen z-0"
       >
         <source

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Vehicle, User } from './types';
 import { ApiService } from './services/api';
 import { Navbar } from './components/Navbar';
@@ -52,6 +52,10 @@ export function App() {
   // Toast Notification
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
+  // Video Refs for Scroll Playback Scrubbing
+  const inventoryVideoRef = useRef<HTMLVideoElement>(null);
+  const inventorySectionRef = useRef<HTMLElement>(null);
+
   const showNotification = (type: 'success' | 'error', message: string) => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 4000);
@@ -80,6 +84,51 @@ export function App() {
       fetchUsers();
     }
   }, [activeTab, user]);
+
+  // Inventory Background Video Scroll Scrubbing
+  useEffect(() => {
+    if (activeTab !== 'inventory') return;
+
+    const video = inventoryVideoRef.current;
+    const section = inventorySectionRef.current;
+    if (!video || !section) return;
+
+    video.pause();
+    let animationFrameId: number;
+    let targetTime = 0;
+
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const totalHeight = section.scrollHeight || rect.height;
+      const visibleHeight = window.innerHeight;
+      const scrollableDistance = totalHeight - visibleHeight;
+
+      const scrollProgress = Math.max(0, Math.min(1, -rect.top / (scrollableDistance || 1)));
+
+      if (video.duration && !isNaN(video.duration)) {
+        targetTime = scrollProgress * video.duration;
+      }
+    };
+
+    const updateVideoTime = () => {
+      if (video && video.duration && !isNaN(video.duration)) {
+        const diff = targetTime - video.currentTime;
+        if (Math.abs(diff) > 0.01) {
+          video.currentTime += diff * 0.2;
+        }
+      }
+      animationFrameId = requestAnimationFrame(updateVideoTime);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    animationFrameId = requestAnimationFrame(updateVideoTime);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [activeTab]);
 
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -364,14 +413,14 @@ export function App() {
 
       {/* VIEW 2: DEDICATED FULL INVENTORY PAGE */}
       {activeTab === 'inventory' && (
-        <main className="relative flex-1 w-full px-6 lg:px-[120px] py-10 overflow-hidden min-h-screen">
-          {/* Background Video specifically for Inventory Section */}
+        <main ref={inventorySectionRef} className="relative flex-1 w-full px-6 lg:px-[120px] py-10 overflow-hidden min-h-screen">
+          {/* Background Video specifically for Inventory Section (Scroll Scrubbed) */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <video
-              autoPlay
-              loop
+              ref={inventoryVideoRef}
               muted
               playsInline
+              preload="auto"
               className="w-full h-full object-cover opacity-75 min-h-full"
             >
               <source
